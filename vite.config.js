@@ -1,9 +1,16 @@
 import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
+// https://vitejs.dev/config/
 export default defineConfig({
-  server: {
+  plugins: [react()],
+  preview: {
     allowedHosts: [
-      'pachydermal-nonsensibly-phylis.ngrok-free.dev'
+      'norte-client-production.up.railway.app' // Agrega tu dominio aquí
     ]
+  },
+  server: {
+    // Esto es para desarrollo local, puedes dejarlo como está
+    allowedHosts: true 
   }
 })
