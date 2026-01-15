@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   preview: {
     allowedHosts: [
-      'norte-client-production.up.railway.app' // Agrega tu dominio aquí
+      'norteautomotores.up.railway.app' // Agrega tu dominio aquí
     ]
   },
   server: {
