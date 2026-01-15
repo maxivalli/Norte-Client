@@ -64,14 +64,25 @@
 }
 
 .submitBtn {
-  background-color: red;
+  display: flex;         /* Activa Flexbox */
+  align-items: center;   /* Centra verticalmente el texto y el icono */
+  justify-content: center; /* Centra horizontalmente el contenido */
+  gap: 8px;              /* Crea el espacio exacto entre el texto y el icono */
+  
+  /* Tus otros estilos (colores, padding, etc.) */
+  background-color: #25d366;
   color: white;
-  padding: 15px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 6px;
-  font-weight: bold;
+  border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.3s ease;
+}
+
+/* Si el icono todavía se ve un poquito "arriba" o "abajo" por la tipografía */
+.submitBtn svg {
+  display: block; /* Quita espacios extra de línea de base */
 }
 
 .submitBtn:hover {

@@ -79,7 +79,11 @@ function CarModal({ auto, onClose }) {
           <div className={styles.headerInfo}>
             <h2 className={styles.title}>{auto.nombre}</h2>
             <p className={styles.price}>
-              {auto.moneda} {Number(auto.precio || 0).toLocaleString("es-AR")}
+              {Number(auto.precio) === 0
+                ? "Consultar"
+                : `${auto.moneda} ${Number(auto.precio).toLocaleString(
+                    "es-AR"
+                  )}`}
             </p>
           </div>
 

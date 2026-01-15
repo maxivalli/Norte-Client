@@ -1,129 +1,172 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // <--- AGREGADO
-import styles from './Admin.module.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import styles from "./Admin.module.css";
 
 function Admin() {
-  const navigate = useNavigate(); // <--- AGREGADO
+  const navigate = useNavigate();
   const [autos, setAutos] = useState([]);
   const [editandoId, setEditandoId] = useState(null);
   const [filtroAdmin, setFiltroAdmin] = useState("");
-  
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [previews, setPreviews] = useState([]);
+  const [cargando, setCargando] = useState(false);
+
+  const API_URL = window.location.hostname === "localhost" 
+    ? "http://localhost:5001/api/autos" 
+    : "https://norte-production.up.railway.app/api/autos";
+
   const initialForm = {
-    nombre: '', 
-    precio: '', 
-    moneda: 'U$S', 
-    imagenes: '', 
-    motor: '',
-    transmision: 'Manual', 
-    anio: '', 
-    combustible: 'Nafta',
-    kilometraje: '', 
-    descripcion: '', 
-    reservado: false
+    nombre: "",
+    precio: "",
+    moneda: "U$S",
+    imagenes: [],
+    motor: "",
+    transmision: "Manual",
+    anio: "",
+    combustible: "Nafta",
+    kilometraje: "",
+    descripcion: "",
+    reservado: false,
   };
 
   const [formData, setFormData] = useState(initialForm);
 
-  // --- NUEVA LÓGICA DE LOGIN (Sin modificar lo anterior) ---
+  // --- CARGA INICIAL Y LOGIN ---
   useEffect(() => {
-    const auth = localStorage.getItem('adminAuth');
-    if (auth !== 'true') {
-      navigate('/login'); // Expulsa si no está logueado
+    const auth = localStorage.getItem("adminAuth");
+    if (auth !== "true") {
+      navigate("/login");
     } else {
-      cargarAutos(); // Solo carga si hay permiso
+      cargarAutos();
     }
   }, [navigate]);
 
-  const cerrarSesion = () => {
-    localStorage.removeItem('adminAuth');
-    navigate('/login');
-  };
-  // ---------------------------------------------------------
-
   const cargarAutos = async () => {
     try {
-      const res = await fetch('https://norte-production.up.railway.app/api/autos');
+      const res = await fetch(API_URL);
       const data = await res.json();
-      setAutos(data);
+      setAutos(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Error al obtener autos:", err);
     }
   };
 
+  // --- MANEJO DE FORMULARIO ---
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({ 
-      ...formData, 
-      [name]: type === 'checkbox' ? checked : value 
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
-  const prepararEdicion = (auto) => {
-    setEditandoId(auto.id);
-    setFormData({
-      ...auto,
-      imagenes: auto.imagenes.join(', '), 
-      anio: auto.anio || '',
-      kilometraje: auto.kilometraje || '',
-      precio: auto.precio || '',
-      moneda: auto.moneda || 'U$S',
-      combustible: auto.combustible || 'Nafta'
-    });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    setSelectedFiles(files);
+    const newPreviews = files.map(file => URL.createObjectURL(file));
+    setPreviews(newPreviews);
+  };
+
+  const removeSelectedFile = (index) => {
+    const newFiles = selectedFiles.filter((_, i) => i !== index);
+    const newPreviews = previews.filter((_, i) => i !== index);
+    setSelectedFiles(newFiles);
+    setPreviews(newPreviews);
+  };
+
+  // --- SUBIDA A CLOUDINARY ---
+  const uploadImagesToCloudinary = async (files) => {
+    const uploadedUrls = [];
+    const uploadPreset = "norte_autos"; // REEMPLAZAR
+    const cloudName = "det2xmstl";     // REEMPLAZAR
+
+    for (const file of files) {
+      const data = new FormData();
+      data.append("file", file);
+      data.append("upload_preset", uploadPreset);
+      try {
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+          method: "POST",
+          body: data,
+        });
+        const resData = await res.json();
+        if (resData.secure_url) uploadedUrls.push(resData.secure_url);
+      } catch (err) {
+        console.error("Error en Cloudinary:", err);
+      }
+    }
+    return uploadedUrls;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const imagenesArray = formData.imagenes.split(',').map(img => img.trim());
-    const autoParaEnviar = {
-      ...formData,
-      imagenes: imagenesArray,
-      precio: parseInt(formData.precio) || 0,
-      anio: parseInt(formData.anio) || 0,
-      kilometraje: parseInt(formData.kilometraje) || 0
-    };
+    setCargando(true);
 
     try {
-      const url = editandoId 
-        ? `https://norte-production.up.railway.app/api/autos/${editandoId}` 
-        : 'https://norte-production.up.railway.app/api/autos';
-      
-      const method = editandoId ? 'PUT' : 'POST';
+      let urlsFinales = formData.imagenes;
 
-      const response = await fetch(url, {
-        method: method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(autoParaEnviar)
+      if (selectedFiles.length > 0) {
+        const nuevasUrls = await uploadImagesToCloudinary(selectedFiles);
+        urlsFinales = editandoId ? [...formData.imagenes, ...nuevasUrls] : nuevasUrls;
+      }
+
+      const autoParaEnviar = {
+        ...formData,
+        imagenes: urlsFinales,
+        precio: Number(formData.precio),
+        anio: Number(formData.anio),
+        kilometraje: Number(formData.kilometraje),
+      };
+
+      const res = await fetch(editandoId ? `${API_URL}/${editandoId}` : API_URL, {
+        method: editandoId ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(autoParaEnviar),
       });
 
-      if (response.ok) {
-        alert(editandoId ? "✅ Vehículo actualizado con éxito" : "✅ Vehículo publicado con éxito");
-        setFormData(initialForm);
-        setEditandoId(null);
+      if (res.ok) {
+        alert(editandoId ? "✅ Actualizado correctamente" : "🚀 Publicado con éxito");
+        limpiarFormulario();
         cargarAutos();
       }
-    } catch (err) {
-      console.error(err);
-      alert("❌ Hubo un error al procesar la solicitud");
+    } catch (error) {
+      alert("❌ Error al guardar");
+    } finally {
+      setCargando(false);
     }
+  };
+
+  const limpiarFormulario = () => {
+    setEditandoId(null);
+    setFormData(initialForm);
+    setSelectedFiles([]);
+    setPreviews([]);
+  };
+
+  const prepararEdicion = (auto) => {
+    setEditandoId(auto.id);
+    setFormData({ ...auto, imagenes: auto.imagenes || [] });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("¿Estás seguro de que quieres eliminar este vehículo?")) {
+    if (window.confirm("¿Eliminar este vehículo?")) {
       try {
-        const res = await fetch(`https://norte-production.up.railway.app/api/autos/${id}`, {
-          method: 'DELETE'
-        });
-        if (res.ok) {
-          cargarAutos();
-        }
+        const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+        if(res.ok) cargarAutos();
       } catch (err) {
-        console.error("Error al borrar:", err);
+        console.error(err);
       }
     }
   };
 
-  const autosFiltrados = autos.filter(auto => 
+  const cerrarSesion = () => {
+    localStorage.removeItem("adminAuth");
+    navigate("/login");
+  };
+
+  // --- FILTRO DE BÚSQUEDA ---
+  const autosFiltrados = autos.filter((auto) =>
     auto.nombre.toLowerCase().includes(filtroAdmin.toLowerCase())
   );
 
@@ -131,51 +174,82 @@ function Admin() {
     <div className={styles.adminContainer}>
       <header className={styles.adminHeader}>
         <div>
-          <h1>{editandoId ? '📝 Editando Vehículo' : '🚗 Panel de Carga'}</h1>
-          <p>Control de stock - Norte Automotores</p>
+          <h1>{editandoId ? "📝 Editando" : "🚗 Panel de Carga"}</h1>
+          <p>Norte Automotores</p>
         </div>
-        {/* BOTÓN DE CERRAR SESIÓN AGREGADO */}
-        <button onClick={cerrarSesion} className={styles.logoutBtn}>
-          Cerrar Sesión
-        </button>
+        <button onClick={cerrarSesion} className={styles.logoutBtn}>Cerrar Sesión</button>
       </header>
-      
+
       <section className={styles.formSection}>
         <form onSubmit={handleSubmit} className={styles.form}>
-          <input 
-            name="nombre" 
-            placeholder="Marca y modelo (Ej: VW Golf Trendline)" 
-            onChange={handleChange} 
-            value={formData.nombre} 
-            required 
-          />
-          
-          <div className={styles.row}>
-            <select name="moneda" onChange={handleChange} value={formData.moneda} className={styles.selectInput}>
-              <option value="U$S">U$S (Dólares)</option>
-              <option value="$">$ (Pesos)</option>
-            </select>
-            <input name="precio" type="number" placeholder="Precio (Ej: 23.000)" onChange={handleChange} value={formData.precio} required />
-          </div>
-
-          <input name="imagenes" placeholder="Links de fotos (comas)" onChange={handleChange} value={formData.imagenes} required />
-          
-          <div className={styles.row}>
-            <input name="motor" placeholder="Motor (Ej: 1.6 TDI)" onChange={handleChange} value={formData.motor} />
-            <select name="combustible" onChange={handleChange} value={formData.combustible} className={styles.selectInput}>
-              <option value="Nafta">Nafta</option>
-              <option value="Diesel">Diesel</option>
-              <option value="Eléctrico">Eléctrico</option>
-              <option value="Híbrido">Híbrido</option>
-            </select>
+          <div className={styles.formGroup}>
+            <label>Título / Marca y Modelo:</label>
+            <input name="nombre" placeholder="Ej: VW Golf 2020" onChange={handleChange} value={formData.nombre} required />
           </div>
 
           <div className={styles.row}>
-            <input name="anio" placeholder="Año (Ej: 2020)" type="number" onChange={handleChange} value={formData.anio} />
-            <input name="kilometraje" placeholder="Kilometraje (Ej: 45.000)" type="number" onChange={handleChange} value={formData.kilometraje} />
+            <div className={styles.formGroup}>
+              <label>Moneda:</label>
+              <select name="moneda" onChange={handleChange} value={formData.moneda}>
+                <option value="U$S">U$S</option>
+                <option value="$">$</option>
+              </select>
+            </div>
+            <div className={styles.formGroup} style={{flex: 2}}>
+              <label>Precio:</label>
+              <input name="precio" type="number" onChange={handleChange} value={formData.precio} required />
+            </div>
           </div>
 
-          <textarea name="descripcion" placeholder="Descripción detallada (Ej: Asientos de cuero, pantalla multimedia, lavafaros)" onChange={handleChange} value={formData.descripcion} />
+          <div className={styles.formGroup}>
+            <label>Imágenes (Desde Galería):</label>
+            <label className={styles.fileLabel}>
+              <span className={styles.uploadIcon}>📸</span>
+              {selectedFiles.length > 0 ? `${selectedFiles.length} seleccionadas` : "Subir fotos desde la galería"}
+              <input type="file" multiple accept="image/*" onChange={handleFileChange} className={styles.hiddenFileInput} />
+            </label>
+
+            {previews.length > 0 && (
+              <div className={styles.previewContainer}>
+                {previews.map((url, index) => (
+                  <div key={index} className={styles.previewItem}>
+                    <img src={url} alt="Previa" />
+                    <button type="button" onClick={() => removeSelectedFile(index)} className={styles.removePreview}>✕</button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className={styles.row}>
+            <div className={styles.formGroup}>
+              <label>Motor:</label>
+              <input name="motor" placeholder="Ej: 1.6 TDI" onChange={handleChange} value={formData.motor} />
+            </div>
+            <div className={styles.formGroup}>
+              <label>Combustible:</label>
+              <select name="combustible" onChange={handleChange} value={formData.combustible}>
+                <option value="Nafta">Nafta</option>
+                <option value="Diesel">Diesel</option>
+              </select>
+            </div>
+          </div>
+
+          <div className={styles.row}>
+            <div className={styles.formGroup}>
+              <label>Año:</label>
+              <input name="anio" type="number" onChange={handleChange} value={formData.anio} />
+            </div>
+            <div className={styles.formGroup}>
+              <label>Kilometraje:</label>
+              <input name="kilometraje" type="number" onChange={handleChange} value={formData.kilometraje} />
+            </div>
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>Descripción:</label>
+            <textarea name="descripcion" placeholder="Más información (Ej: Asientos de cuero, A/A, Pantalla 7 pulgadas, etc)" onChange={handleChange} value={formData.descripcion} />
+          </div>
 
           <label className={styles.checkboxLabel}>
             <input type="checkbox" name="reservado" onChange={handleChange} checked={formData.reservado} />
@@ -183,13 +257,11 @@ function Admin() {
           </label>
 
           <div className={styles.buttonGroup}>
-            <button type="submit" className={styles.submitBtn}>
-              {editandoId ? 'Guardar Cambios' : 'Publicar Vehículo'}
+            <button type="submit" className={`${styles.submitBtn} ${cargando ? styles.loading : ""}`} disabled={cargando}>
+              {cargando ? "⏳ Subiendo..." : editandoId ? "💾 Guardar Cambios" : "🚀 Publicar"}
             </button>
             {editandoId && (
-              <button type="button" onClick={() => { setEditandoId(null); setFormData(initialForm); }} className={styles.cancelBtn}>
-                Cancelar Edición
-              </button>
+              <button type="button" onClick={limpiarFormulario} className={styles.cancelBtn}>Cancelar Edición</button>
             )}
           </div>
         </form>
@@ -197,33 +269,37 @@ function Admin() {
 
       <hr className={styles.divider} />
 
+      {/* --- LISTADO DE AUTOS CARGADOS --- */}
       <section className={styles.listSection}>
         <div className={styles.listHeader}>
-          <h3>Inventario ({autos.length})</h3>
+          <h3>Inventario ({autos.length} unidades)</h3>
           <input 
             type="text" 
-            placeholder="🔍 Buscar unidad..." 
-            className={styles.searchAdminInput}
-            onChange={(e) => setFiltroAdmin(e.target.value)}
-            value={filtroAdmin}
+            placeholder="🔍 Buscar auto por nombre..." 
+            className={styles.searchAdminInput} 
+            onChange={(e) => setFiltroAdmin(e.target.value)} 
           />
         </div>
 
         <div className={styles.listaBorrar}>
-          {autosFiltrados.map(auto => (
-            <div key={auto.id} className={styles.itemBorrar}>
-              <div className={styles.itemInfo}>
-                <span className={styles.itemName}>{auto.nombre}</span>
-                <span className={styles.itemDetails}>
-                  {auto.moneda} {auto.precio?.toLocaleString()} | {auto.anio}
-                </span>
+          {autosFiltrados.length > 0 ? (
+            autosFiltrados.map((auto) => (
+              <div key={auto.id} className={styles.itemBorrar}>
+                <div className={styles.itemInfo}>
+                  <span className={styles.itemName}>{auto.nombre}</span>
+                  <span className={styles.itemDetails}>
+                    {auto.moneda} {auto.precio?.toLocaleString()} | {auto.anio}
+                  </span>
+                </div>
+                <div className={styles.acciones}>
+                  <button onClick={() => prepararEdicion(auto)} className={styles.editBtn}>Editar</button>
+                  <button onClick={() => handleDelete(auto.id)} className={styles.deleteBtn}>Borrar</button>
+                </div>
               </div>
-              <div className={styles.acciones}>
-                <button onClick={() => prepararEdicion(auto)} className={styles.editBtn}>Editar</button>
-                <button onClick={() => handleDelete(auto.id)} className={styles.deleteBtn}>Borrar</button>
-              </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className={styles.emptyMsg}>No se encontraron vehículos.</p>
+          )}
         </div>
       </section>
     </div>

@@ -20,7 +20,7 @@
   width: 60px;
   height: 60px;
   background: #e8f0fe;
-  color: #1a73e8;
+  color: red;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -47,7 +47,7 @@
 .loginBtn {
   width: 100%;
   padding: 12px;
-  background: #1a73e8;
+  background: red;
   color: white;
   border: none;
   border-radius: 8px;
@@ -55,4 +55,4 @@
   cursor: pointer;
 }
 
-.loginBtn:hover { background: #1557b0; }
+.loginBtn:hover { background: black; }
