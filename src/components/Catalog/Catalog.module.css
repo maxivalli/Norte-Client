@@ -1,0 +1,231 @@
+.catalogSection {
+  padding: 60px 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Barra de búsqueda simplificada */
+.searchBar {
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.searchBox {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+.searchBox input {
+  width: 100%;
+  padding: 15px 15px 15px 50px;
+  border: 1px solid #ddd;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  outline: none;
+  transition: all 0.3s;
+}
+
+.searchBox input:focus {
+  border-color: #1a73e8;
+  box-shadow: 0 4px 20px rgba(26, 115, 232, 0.15);
+}
+
+/* Grilla de tarjetas */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.card {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/10;
+}
+
+.imageWrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.badgeReservado {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #ff4d4d;
+  color: white;
+  padding: 5px 12px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.info {
+  padding: 20px;
+}
+
+.carName {
+  font-size: 1.25rem;
+  margin-bottom: 8px;
+  color: #222;
+}
+
+.price {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: grey;
+  margin-bottom: 12px;
+}
+
+.detailsRow {
+  display: flex;
+  gap: 15px;
+  color: #666;
+  font-size: 0.9rem;
+  border-top: 1px solid #eee;
+  padding-top: 12px;
+}
+
+.catalogSection {
+  padding: 40px 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Barra superior con búsqueda y orden */
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.searchBox {
+  position: relative;
+  flex: 1;
+  min-width: 300px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+.searchBox input {
+  width: 100%;
+  padding: 12px 12px 12px 45px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: white;
+  outline: none;
+}
+
+/* Estilos del Selector */
+.sortContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sortContainer label {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.selectWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.selectSort {
+  appearance: none; /* Quita la flecha por defecto del navegador */
+  background: white;
+  border: 1px solid #ddd;
+  padding: 10px 35px 10px 15px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  outline: none;
+  font-weight: 600;
+  color: #333;
+}
+
+.arrowIcon {
+  position: absolute;
+  right: 12px;
+  pointer-events: none;
+  color: #666;
+}
+
+/* Grilla (se mantiene igual que el anterior) */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+/* ... (resto de estilos de .card, .price, etc. que ya tenías) ... */
+
+@media (max-width: 768px) {
+  .topBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .sortContainer {
+    justify-content: right;
+  }
+
+  .searchBox {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

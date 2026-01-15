@@ -1,0 +1,78 @@
+.hero {
+  height: 80vh; /* Ocupa el 80% de la altura de la pantalla */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  position: relative;
+  /* Imagen de un auto de alta calidad */
+background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+            url('https://images.unsplash.com/photo-1555215695-3004980ad54e?q=80&w=1920&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+}
+
+.content {
+  max-width: 1200px;
+  padding: 10px;
+}
+
+.content p {
+  font-style: italic;
+}
+
+.title {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  margin-top: 0;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  opacity: 0.8;
+}
+
+.ctaButton {
+  background-color: red;
+  color: white;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+  text-decoration: none; 
+  display: inline-block;
+}
+
+.ctaButton:hover {
+  background-color: black;
+}
+
+/* --- ESTILOS PARA CELULARES (Pantallas menores a 768px) --- */
+@media (max-width: 768px) {
+
+  .title {
+    font-size: 2rem; /* El texto era de 3.5rem, aquí lo achicamos */
+    padding: 0 10px;
+  }
+
+  .subtitle {
+    justify-self: center;
+    max-width: 80%;
+    font-size: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .content {
+    align-self: center;
+    margin-top: -100px;
+  }
+
+  .hero {
+    height: 85vh; /* En celulares no hace falta que sea tan alto */
+  }
+}

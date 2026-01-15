@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f4f4f4;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  display: block; /* Esto quita el centrado vertical de Vite */
+  min-height: 100vh;
+  width: 100%;
+}
+
+* {
+  box-sizing: border-box; /* Para que los paddings no rompan el ancho */
+}

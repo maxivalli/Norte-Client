@@ -1,0 +1,55 @@
+.features {
+  padding: 60px 20px;
+  background-color: #ffffff;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.featureCard {
+  text-align: center;
+  padding: 30px;
+  border-radius: 15px;
+  transition: transform 0.3s ease;
+  background: #fdfdfd;
+}
+
+.featureCard:hover {
+  transform: translateY(-5px);
+}
+
+.iconWrapper {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  color: red; /* Azul principal de tu marca */
+}
+
+.featureCard h3 {
+  font-size: 1.4rem;
+  margin-bottom: 12px;
+  color: #222;
+}
+
+.featureCard p {
+  color: #666;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 850px) {
+  .container {
+    grid-template-columns: 1fr; /* Una sola columna en móvil */
+    gap: 20px;
+  }
+  
+  .features {
+    padding: 40px 20px;
+  }
+}

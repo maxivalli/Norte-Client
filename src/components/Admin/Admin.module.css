@@ -1,0 +1,267 @@
+.adminContainer {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #fcfcfc;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  font-family: 'Inter', -apple-system, sans-serif;
+}
+
+.logoutBtn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #ff5252;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.adminHeader {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.adminHeader h1 {
+  font-size: 2rem;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.adminHeader p {
+  color: #666;
+}
+
+.formSection {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid #eee;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Inputs, Textareas y Selects */
+.form input, 
+.form textarea,
+.selectInput {
+  color: grey;
+  padding: 14px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+  background-color: #fff;
+}
+
+.form input:focus, 
+.form textarea:focus,
+.selectInput:focus {
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+}
+
+/* Grilla para campos dobles (Precio/Moneda, Motor/Combustible, Año/KM) */
+.row {
+  display: grid;
+  grid-template-columns: 1fr 2fr; /* El primer campo más corto que el segundo */
+  gap: 15px;
+}
+
+/* Estilo específico para el área de texto */
+.form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Checkbox de Reservado */
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  background: #fff8f8;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #d32f2f;
+}
+
+.checkboxLabel input {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+/* Grupo de botones del formulario */
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.submitBtn {
+  background-color: #1a73e8;
+  color: white;
+  padding: 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.submitBtn:hover {
+  background-color: #1557b0;
+}
+
+.cancelBtn {
+  background-color: #e0e0e0;
+  color: #444;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.divider {
+  margin: 50px 0;
+  border: 0;
+  border-top: 2px dashed #eee;
+}
+
+/* LISTA DE GESTIÓN */
+.listHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.searchAdminInput {
+  width: 100%;
+  padding: 12px 20px;
+  border: 2px solid #eee;
+  border-radius: 30px;
+  font-size: 1rem;
+  outline: none;
+}
+
+.searchAdminInput:focus {
+  border-color: #1a73e8;
+}
+
+.listaBorrar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.itemBorrar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  transition: transform 0.2s;
+}
+
+.itemBorrar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.itemName {
+  font-weight: 700;
+  color: #222;
+}
+
+.itemDetails {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.acciones {
+  display: flex;
+  gap: 8px;
+}
+
+.editBtn {
+  background: #fff3e0;
+  color: #e65100;
+  border: 1px solid #ffe0b2;
+  padding: 8px 15px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.deleteBtn {
+  background: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+  padding: 8px 15px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.editBtn:hover { background: #ffe0b2; }
+.deleteBtn:hover { background: #ffcdd2; }
+
+.noResults {
+  text-align: center;
+  color: #999;
+  padding: 40px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 600px) {
+  .adminContainer {
+    margin: 10px;
+    padding: 15px;
+  }
+
+  .adminHeader {
+  margin-top: 90px;
+}
+
+  
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .itemBorrar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .acciones {
+    width: 100%;
+  }
+
+  .acciones button {
+    flex: 1;
+  }
+}
