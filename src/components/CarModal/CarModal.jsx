@@ -9,6 +9,7 @@ import {
   Settings,
   Calendar,
   Fuel,
+  Activity, // Importamos un icono para la transmisión
 } from "lucide-react";
 
 function CarModal({ auto, onClose }) {
@@ -94,6 +95,15 @@ function CarModal({ auto, onClose }) {
                 <strong>Motor:</strong> {auto.motor || "Consultar"}
               </span>
             </div>
+            
+            {/* NUEVO CAMPO: TRANSMISIÓN */}
+            <div className={styles.specItem}>
+              <Activity size={18} />
+              <span>
+                <strong>Transmisión:</strong> {auto.transmision || "Manual"}
+              </span>
+            </div>
+
             <div className={styles.specItem}>
               <Calendar size={18} />
               <span>
@@ -113,7 +123,7 @@ function CarModal({ auto, onClose }) {
             <div className={styles.specItem}>
               <Fuel size={18} />
               <span>
-                <strong>Combustible:</strong> {auto.combustible || "Consultar"}
+                <strong>Combustible:</strong> {auto.combustible || "Nafta"}
               </span>
             </div>
           </div>
@@ -150,14 +160,14 @@ function CarModal({ auto, onClose }) {
         <div
           className={styles.fullScreenOverlay}
           onClick={(e) => {
-            e.stopPropagation(); // Evita que el clic llegue al overlay del catálogo
+            e.stopPropagation();
             setIsZoomed(false);
           }}
         >
           <button
             className={styles.closeZoom}
             onClick={(e) => {
-              e.stopPropagation(); // IMPORTANTE: Evita cerrar el modal principal
+              e.stopPropagation();
               setIsZoomed(false);
             }}
           >
@@ -169,7 +179,7 @@ function CarModal({ auto, onClose }) {
               <button
                 className={styles.navBtnLeft}
                 onClick={(e) => {
-                  e.stopPropagation(); // Evita cerrar el zoom al tocar las flechas
+                  e.stopPropagation();
                   prevImage(e);
                 }}
               >
@@ -178,7 +188,7 @@ function CarModal({ auto, onClose }) {
               <button
                 className={styles.navBtnRight}
                 onClick={(e) => {
-                  e.stopPropagation(); // Evita cerrar el zoom al tocar las flechas
+                  e.stopPropagation();
                   nextImage(e);
                 }}
               >
@@ -191,7 +201,7 @@ function CarModal({ auto, onClose }) {
             src={fotos[currentImgIndex]}
             alt="Zoom"
             className={styles.fullScreenImage}
-            onClick={(e) => e.stopPropagation()} // Evita cerrar si tocas la foto
+            onClick={(e) => e.stopPropagation()}
           />
         </div>
       )}

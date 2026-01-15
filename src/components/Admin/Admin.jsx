@@ -77,8 +77,8 @@ function Admin() {
   // --- SUBIDA A CLOUDINARY ---
   const uploadImagesToCloudinary = async (files) => {
     const uploadedUrls = [];
-    const uploadPreset = "norte_autos"; // REEMPLAZAR
-    const cloudName = "det2xmstl";     // REEMPLAZAR
+    const uploadPreset = "norte_autos"; 
+    const cloudName = "det2xmstl";     
 
     for (const file of files) {
       const data = new FormData();
@@ -227,23 +227,33 @@ function Admin() {
               <input name="motor" placeholder="Ej: 1.6 TDI" onChange={handleChange} value={formData.motor} />
             </div>
             <div className={styles.formGroup}>
-              <label>Combustible:</label>
-              <select name="combustible" onChange={handleChange} value={formData.combustible}>
-                <option value="Nafta">Nafta</option>
-                <option value="Diesel">Diesel</option>
+              <label>Transmisión:</label>
+              <select name="transmision" onChange={handleChange} value={formData.transmision}>
+                <option value="Manual">Manual</option>
+                <option value="Automática">Automática</option>
               </select>
             </div>
           </div>
 
           <div className={styles.row}>
             <div className={styles.formGroup}>
+              <label>Combustible:</label>
+              <select name="combustible" onChange={handleChange} value={formData.combustible}>
+                <option value="Nafta">Nafta</option>
+                <option value="Diesel">Diesel</option>
+                <option value="Híbrido">Híbrido</option>
+                <option value="Eléctrico">Eléctrico</option>
+              </select>
+            </div>
+            <div className={styles.formGroup}>
               <label>Año:</label>
               <input name="anio" type="number" onChange={handleChange} value={formData.anio} />
             </div>
-            <div className={styles.formGroup}>
-              <label>Kilometraje:</label>
-              <input name="kilometraje" type="number" onChange={handleChange} value={formData.kilometraje} />
-            </div>
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>Kilometraje:</label>
+            <input name="kilometraje" type="number" onChange={handleChange} value={formData.kilometraje} />
           </div>
 
           <div className={styles.formGroup}>
