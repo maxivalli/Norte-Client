@@ -9,6 +9,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/auto/:id" element={<Home />} />     
         <Route path="/login" element={<Login />} />
         <Route path="/admin" element={<Admin />} />
       </Routes>
