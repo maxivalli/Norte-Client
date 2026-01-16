@@ -216,32 +216,6 @@
 .navBtnLeft { left: 20px; }
 .navBtnRight { right: 20px; }
 
-.shareBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  margin-top: 15px;
-  margin-bottom: 8px; /* Espacio antes del botón de WhatsApp */
-  padding: 12px;
-  background-color: #f3f4f6;
-  color: #374151;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.shareBtn:hover {
-  background-color: #e5e7eb;
-}
-
-.shareBtn svg {
-  color: #4b5563;
-}
-
 /* Responsive */
 @media (max-width: 850px) {
   .modal {

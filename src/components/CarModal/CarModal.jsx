@@ -9,18 +9,8 @@ import {
   Settings,
   Calendar,
   Fuel,
-  Activity,
-  Share2,
+  Activity, // Importamos un icono para la transmisión
 } from "lucide-react";
-
-// --- LA FUNCIÓN DEBE ESTAR AQUÍ AFUERA ---
-const optimizarImagen = (url) => {
-  if (!url) return "";
-  if (url.includes("cloudinary.com")) {
-    return url.replace("/upload/", "/upload/f_auto,q_auto/");
-  }
-  return url;
-};
 
 function CarModal({ auto, onClose }) {
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
@@ -40,33 +30,6 @@ function CarModal({ auto, onClose }) {
     setCurrentImgIndex((prev) => (prev === 0 ? fotos.length - 1 : prev - 1));
   };
 
-  const crearSlug = (nombre) => {
-    return nombre
-      .toLowerCase()
-      .trim()
-      .replace(/[^\w\s-]/g, "")
-      .replace(/[\s_-]+/g, "-")
-      .replace(/^-+|-+$/g, "");
-  };
-
-  const compartirPublicacion = () => {
-    const slug = crearSlug(auto.nombre);
-    const url = `${window.location.origin}/auto/${slug}`;
-    const texto = `Mirá este ${auto.nombre} en Norte Automotores:`;
-
-    if (navigator.share) {
-      navigator.share({
-        title: auto.nombre,
-        text: texto,
-        url: url, // El navegador se encarga de separarlos correctamente
-      });
-    } else {
-      // Si copiás al portapapeles, asegurate de poner el SALTO DE LÍNEA (\n)
-      navigator.clipboard.writeText(`${texto}\n\n${url}`);
-      alert("¡Enlace copiado al portapapeles!");
-    }
-  };
-
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -74,14 +37,14 @@ function CarModal({ auto, onClose }) {
           <X size={24} />
         </button>
 
+        {/* --- SECCIÓN IZQUIERDA: GALERÍA --- */}
         <div className={styles.imageSide}>
           <div
             className={styles.mainImageContainer}
             onClick={() => setIsZoomed(true)}
           >
-            {/* AQUÍ USAMOS LA FUNCIÓN */}
             <img
-              src={optimizarImagen(fotos[currentImgIndex])}
+              src={fotos[currentImgIndex]}
               alt={auto.nombre}
               className={styles.mainImage}
             />
@@ -105,14 +68,14 @@ function CarModal({ auto, onClose }) {
                   }`}
                   onClick={() => setCurrentImgIndex(index)}
                 >
-                  {/* AQUÍ TAMBIÉN USAMOS LA FUNCIÓN */}
-                  <img src={optimizarImagen(img)} alt={`Vista ${index + 1}`} />
+                  <img src={img} alt={`Vista ${index + 1}`} />
                 </div>
               ))}
             </div>
           )}
         </div>
 
+        {/* --- SECCIÓN DERECHA: INFO --- */}
         <div className={styles.contentSide}>
           <div className={styles.headerInfo}>
             <h2 className={styles.title}>{auto.nombre}</h2>
@@ -132,7 +95,8 @@ function CarModal({ auto, onClose }) {
                 <strong>Motor:</strong> {auto.motor || "Consultar"}
               </span>
             </div>
-
+            
+            {/* NUEVO CAMPO: TRANSMISIÓN */}
             <div className={styles.specItem}>
               <Activity size={18} />
               <span>
@@ -171,10 +135,6 @@ function CarModal({ auto, onClose }) {
             </p>
           </div>
 
-          <button onClick={compartirPublicacion} className={styles.shareBtn}>
-            <Share2 size={18} /> Compartir publicación
-          </button>
-
           <button
             onClick={() =>
               !auto.reservado &&
@@ -195,6 +155,7 @@ function CarModal({ auto, onClose }) {
         </div>
       </div>
 
+      {/* --- MODO ZOOM --- */}
       {isZoomed && (
         <div
           className={styles.fullScreenOverlay}
@@ -237,7 +198,7 @@ function CarModal({ auto, onClose }) {
           )}
 
           <img
-            src={optimizarImagen(fotos[currentImgIndex])}
+            src={fotos[currentImgIndex]}
             alt="Zoom"
             className={styles.fullScreenImage}
             onClick={(e) => e.stopPropagation()}
