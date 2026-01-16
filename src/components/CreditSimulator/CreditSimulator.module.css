@@ -1,48 +1,75 @@
 .container {
   max-width: 1200px;
-  margin: 60px auto;
-  padding: 40px;
+  margin: 40px auto;
+  padding: 30px;
   background: #ffffff;
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
 
+.container p {
+  font-size: 10px;
+  margin: 0px;
+}
+
 .header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
-.icon { color: red; margin-bottom: 10px; }
+.header h2 {
+  font-size: 1.8rem;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+}
 
+.icon { color: #25D366; margin-bottom: 10px; }
+
+/* El Grid que se rompe en mobile */
 .grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
+  grid-template-columns: 1fr 1fr; /* Dos columnas en PC */
+  gap: 30px;
+  align-items: start;
 }
 
-.group { margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
+.inputSection {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
 
-.group label { font-weight: 600; color: #444; font-size: 0.9rem; }
+.group { display: flex; flex-direction: column; gap: 8px; }
+
+.group label { 
+  font-weight: 600; 
+  color: #444; 
+  font-size: 0.9rem; 
+}
 
 .group input, .select {
-  padding: 12px;
+  padding: 14px; /* Un poco más grande para dedos en mobile */
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .cuotasGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  gap: 8px;
 }
 
 .cuotasGrid button {
-  padding: 10px;
+  padding: 12px 5px;
   border: 1px solid #ddd;
   background: white;
   border-radius: 8px;
   cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
 }
 
 .cuotasGrid button.activeBtn {
@@ -51,45 +78,86 @@
   border-color: #1a1a1a;
 }
 
+/* Sección de Resultado */
+.resultSection {
+  height: 100%;
+}
+
 .resultCard {
   background: #f8f9fa;
   padding: 30px;
-  border-radius: 15px;
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  height: 100%;
-  justify-content: center;
+  border: 1px solid #eee;
 }
 
-.price { font-size: 2.5rem; margin: 15px 0; color: #1a1a1a; }
+.price { 
+  font-size: 2.2rem; 
+  margin: 10px 0; 
+  color: #1a1a1a; 
+  word-break: break-all; /* Evita que el precio se salga del cuadro */
+}
 
 .infoBox {
   display: flex;
   gap: 8px;
   background: #e7f3ff;
   padding: 12px;
-  border-radius: 8px;
+  border-radius: 10px;
   margin-bottom: 20px;
   color: #0056b3;
   font-size: 0.8rem;
+  text-align: left;
 }
 
 .cta {
   width: 100%;
-  padding: 15px;
+  padding: 16px;
   background: #25D366;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-weight: bold;
+  font-size: 1rem;
   cursor: pointer;
-  transition: transform 0.2s;
 }
 
-.cta:hover { transform: scale(1.02); }
+/* ==========================================
+   MEDIA QUERIES (AQUÍ ESTÁ LA MAGIA)
+   ========================================== */
 
-@media (max-width: 768px) {
-  .grid { grid-template-columns: 1fr; }
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr; /* Pasa a una sola columna */
+    gap: 20px;
+  }
+
+  .container {
+    padding: 20px;
+  }
+
+  .price {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h2 {
+    font-size: 1.5rem;
+  }
+
+  .cuotasGrid {
+    grid-template-columns: repeat(2, 1fr); /* 2x2 en celulares muy chicos */
+  }
+
+  .resultCard {
+    padding: 20px;
+  }
+
+  .price {
+    font-size: 1.8rem;
+  }
 }

@@ -103,6 +103,7 @@ const CreditSimulator = ({ autos }) => {
           <div className={styles.resultCard}>
             <Wallet size={40} color="#25D366" />
             <span>Cuota mensual estimada</span>
+            <p>Tasa promedio: 35%</p>
             <h3 className={styles.price}>
               $ {resultado.toLocaleString("es-AR")}
             </h3>
