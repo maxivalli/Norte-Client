@@ -18,7 +18,7 @@ function Admin() {
   const initialForm = {
     nombre: "",
     precio: "",
-    moneda: "U$S",
+    moneda: "$",
     imagenes: [],
     motor: "",
     transmision: "Manual",
@@ -191,13 +191,14 @@ function Admin() {
             <div className={styles.formGroup}>
               <label>Moneda:</label>
               <select name="moneda" onChange={handleChange} value={formData.moneda}>
-                <option value="U$S">U$S</option>
-                <option value="$">$</option>
+                
+                <option value="$">$ Pesos</option>
+                <option value="U$S">U$S Dólares</option>
               </select>
             </div>
             <div className={styles.formGroup} style={{flex: 2}}>
               <label>Precio:</label>
-              <input name="precio" type="number" onChange={handleChange} value={formData.precio} required />
+              <input placeholder= "Para mostrar 'Consultar' colocar 0"name="precio" type="number" onChange={handleChange} value={formData.precio} required />
             </div>
           </div>
 
@@ -247,13 +248,13 @@ function Admin() {
             </div>
             <div className={styles.formGroup}>
               <label>Año:</label>
-              <input name="anio" type="number" onChange={handleChange} value={formData.anio} />
+              <input placeholder="Ej: 2020" name="anio" type="number" onChange={handleChange} value={formData.anio} />
             </div>
           </div>
 
           <div className={styles.formGroup}>
             <label>Kilometraje:</label>
-            <input name="kilometraje" type="number" onChange={handleChange} value={formData.kilometraje} />
+            <input placeholder= "Ej: 75000" name="kilometraje" type="number" onChange={handleChange} value={formData.kilometraje} />
           </div>
 
           <div className={styles.formGroup}>
