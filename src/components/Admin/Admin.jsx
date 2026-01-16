@@ -153,9 +153,9 @@ function Admin() {
         ...formData,
         descripcion: descripcionConEmojis, // Guardamos el texto prolijo
         imagenes: urlsFinales,
-        precio: Number(formData.precio),
-        anio: Number(formData.anio),
-        kilometraje: Number(formData.kilometraje),
+        precio: Math.round(Number(formData.precio)),
+        anio: Math.round(Number(formData.anio)),
+        kilometraje: Math.round(Number(formData.kilometraje)),
       };
 
       const res = await fetch(
