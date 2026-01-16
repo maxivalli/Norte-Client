@@ -31,7 +31,7 @@ function CarModal({ auto, onClose }) {
       .replace(/[\s_-]+/g, "-")
       .replace(/^-+|-+$/g, "");
 
-    return `https://norteautomotores.up.railway.app/auto/${slug}`;
+    return `https://norteautomotores.up.railway.app/share/auto/${slug}`;
   };
 
   const handleCompartir = () => {
