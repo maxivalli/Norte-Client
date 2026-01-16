@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Catalog.module.css";
 import CarModal from "../CarModal/CarModal.jsx";
+import CreditSimulator from "../CreditSimulator/CreditSimulator.jsx";
 import { Search, ChevronDown } from "lucide-react";
 
 function Catalog({ autoUrl }) {
@@ -141,6 +142,7 @@ function Catalog({ autoUrl }) {
       {selectedAuto && (
         <CarModal auto={selectedAuto} onClose={handleCloseModal} />
       )}
+      <CreditSimulator autos={autos}/>
     </div>
   );
 }
