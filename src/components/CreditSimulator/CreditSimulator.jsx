@@ -71,7 +71,7 @@ const CreditSimulator = ({ autos }) => {
     (parseFloat(montoVehiculo) || 0) - (parseFloat(entrega) || 0);
 
   return (
-    <section className={styles.container}>
+    <section id="simulador" className={styles.container}>
       <div className={styles.card}>
         <div className={styles.header}>
           <Calculator size={30} className={styles.brandIcon} />

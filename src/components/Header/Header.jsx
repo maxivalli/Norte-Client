@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styles from "./Header.module.css";
-import { Menu, X } from "lucide-react"; // Quitamos 'Car' porque usaremos tu imagen
+import { Menu, X } from "lucide-react";
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,7 +12,6 @@ function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.logo}>
-        {/* Reemplazamos el icono por tu imagen de la carpeta public */}
         <img
           src="/Norte logo.png"
           alt="Norte Automotores Logo"
@@ -28,8 +27,13 @@ function Header() {
         <a href="#catalogo" onClick={() => setIsOpen(false)}>
           Catálogo
         </a>
+        {/* Nuevo enlace al simulador */}
+
         <a href="#contacto" onClick={() => setIsOpen(false)}>
           Contacto
+        </a>
+        <a href="#simulador" onClick={() => setIsOpen(false)}>
+          Simulador
         </a>
       </nav>
     </header>

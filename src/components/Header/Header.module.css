@@ -53,6 +53,16 @@
   padding: 5px;
 }
 
+/* Header.module.css */
+.nav a[href="#simulador"] {
+  color: #25D366; /* El verde de tu marca */
+  font-weight: bold;
+}
+
+.nav a[href="#simulador"]:hover {
+  color: green; /* El verde de tu marca */
+}
+
 /* --- MODO RESPONSIVE (CELULARES) --- */
 @media (max-width: 768px) {
   .menuButton {

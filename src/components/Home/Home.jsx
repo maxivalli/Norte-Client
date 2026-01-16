@@ -2,6 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom"; // Importamos useParams
 import Header from "../Header/Header";
 import Hero from "../Hero/Hero";
+import GoogleReviews from "../GoogleReviews/GoogleReviews";
 import Featuress from "../Featuress/Featuress";
 import Catalog from "../Catalog/Catalog";
 import Contact from "../Contact/Contact";
@@ -14,6 +15,7 @@ function Home() {
     <main>
       <Header />
       <Hero />
+      <GoogleReviews />
       <Featuress />
       <div id="catalogo">
         {/* Le pasamos el slug al catálogo */}
