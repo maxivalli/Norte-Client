@@ -183,7 +183,7 @@ function CarModal({ auto, onClose }) {
             onClick={() =>
               !auto.reservado &&
               window.open(
-                `https://wa.me/5493408671423?text=Hola! Estoy interesado en el ${auto.nombre}`,
+                `https://wa.me/5493408671423?text=Hola! Estoy interesado en el ${auto.nombre}, modelo ${auto.anio}.`,
                 "_blank"
               )
             }
