@@ -11,6 +11,23 @@ function Admin() {
   const [previews, setPreviews] = useState([]);
   const [cargando, setCargando] = useState(false);
 
+  // --- CONFIGURACIÓN DE EQUIPAMIENTO ---
+  const equipamientoOpciones = [
+    { id: "aire", label: "Aire acondicionado", emoji: "❄️" },
+    { id: "airbags", label: "Airbags", emoji: "🛡️" },
+    { id: "pantalla", label: "Pantalla multimedia", emoji: "📺" },
+    { id: "traccion", label: "Control de tracción", emoji: "🏎️" },
+    { id: "cuero", label: "Asientos de cuero", emoji: "💺" },
+    { id: "luces", label: "Luces antinieblas", emoji: "💡" },
+    { id: "bluetooth", label: "Bluetooth", emoji: "🛜" },
+    { id: "crucero", label: "Control crucero", emoji: "🛣️" },
+    { id: "camara", label: "Cámara de retroceso", emoji: "📷" },
+    { id: "clima", label: "Climatizador", emoji: "🌡️" },
+    { id: "abs", label: "ABS", emoji: "🛑" },
+  ];
+
+  const [equipamientoSeleccionado, setEquipamientoSeleccionado] = useState({});
+
   const API_URL =
     window.location.hostname === "localhost"
       ? "http://localhost:5001/api/autos"
@@ -26,13 +43,14 @@ function Admin() {
     anio: "",
     combustible: "Nafta",
     kilometraje: "",
-    descripcion: "",
+    descripcion: "", // Aquí se guardará el string de emojis
+    color: "",
     reservado: false,
   };
 
   const [formData, setFormData] = useState(initialForm);
 
-  // --- CARGA INICIAL Y LOGIN ---
+  // --- CARGA INICIAL ---
   useEffect(() => {
     const auth = localStorage.getItem("adminAuth");
     if (auth !== "true") {
@@ -61,6 +79,14 @@ function Admin() {
     });
   };
 
+  const handleEquipamientoChange = (e) => {
+    const { name, checked } = e.target;
+    setEquipamientoSeleccionado((prev) => ({
+      ...prev,
+      [name]: checked,
+    }));
+  };
+
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
     setSelectedFiles(files);
@@ -75,7 +101,7 @@ function Admin() {
     setPreviews(newPreviews);
   };
 
-  // --- SUBIDA A CLOUDINARY ---
+  // --- CLOUDINARY ---
   const uploadImagesToCloudinary = async (files) => {
     const uploadedUrls = [];
     const uploadPreset = "norte_autos";
@@ -102,13 +128,20 @@ function Admin() {
     return uploadedUrls;
   };
 
+  // --- SUBMIT ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     setCargando(true);
 
     try {
-      let urlsFinales = formData.imagenes;
+      // 1. Generar el texto de descripción a partir de los checkboxes
+      const descripcionConEmojis = equipamientoOpciones
+        .filter((op) => equipamientoSeleccionado[op.id])
+        .map((op) => `${op.emoji} ${op.label}`)
+        .join("\n");
 
+      // 2. Subir imágenes si hay nuevas
+      let urlsFinales = formData.imagenes;
       if (selectedFiles.length > 0) {
         const nuevasUrls = await uploadImagesToCloudinary(selectedFiles);
         urlsFinales = editandoId
@@ -118,6 +151,7 @@ function Admin() {
 
       const autoParaEnviar = {
         ...formData,
+        descripcion: descripcionConEmojis, // Guardamos el texto prolijo
         imagenes: urlsFinales,
         precio: Number(formData.precio),
         anio: Number(formData.anio),
@@ -150,6 +184,7 @@ function Admin() {
   const limpiarFormulario = () => {
     setEditandoId(null);
     setFormData(initialForm);
+    setEquipamientoSeleccionado({});
     setSelectedFiles([]);
     setPreviews([]);
   };
@@ -157,6 +192,15 @@ function Admin() {
   const prepararEdicion = (auto) => {
     setEditandoId(auto.id);
     setFormData({ ...auto, imagenes: auto.imagenes || [] });
+
+    // Marcar los checkboxes detectando el texto en la descripción
+    const nuevosChecks = {};
+    equipamientoOpciones.forEach((op) => {
+      if (auto.descripcion?.includes(op.label)) {
+        nuevosChecks[op.id] = true;
+      }
+    });
+    setEquipamientoSeleccionado(nuevosChecks);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -176,7 +220,6 @@ function Admin() {
     navigate("/login");
   };
 
-  // --- FILTRO DE BÚSQUEDA ---
   const autosFiltrados = autos.filter((auto) =>
     auto.nombre.toLowerCase().includes(filtroAdmin.toLowerCase())
   );
@@ -185,7 +228,7 @@ function Admin() {
     <div className={styles.adminContainer}>
       <header className={styles.adminHeader}>
         <div>
-          <h1>{editandoId ? "📝 Editando" : "🚗 Panel de Carga"}</h1>
+          <h1>{editandoId ? "📝 Editando Auto" : "🚗 Panel de Carga"}</h1>
           <p>Norte Automotores</p>
         </div>
         <button onClick={cerrarSesion} className={styles.logoutBtn}>
@@ -196,7 +239,7 @@ function Admin() {
       <section className={styles.formSection}>
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
-            <label>Título / Marca y Modelo:</label>
+            <label>Marca y Modelo:</label>
             <input
               name="nombre"
               placeholder="Ej: VW Golf 2020"
@@ -219,9 +262,8 @@ function Admin() {
               </select>
             </div>
             <div className={styles.formGroup} style={{ flex: 2 }}>
-              <label>Precio:</label>
+              <label>Precio (0 para "Consultar"):</label>
               <input
-                placeholder="Para mostrar 'Consultar' colocar 0"
                 name="precio"
                 type="number"
                 onChange={handleChange}
@@ -232,12 +274,12 @@ function Admin() {
           </div>
 
           <div className={styles.formGroup}>
-            <label>Imágenes (Desde Galería):</label>
+            <label>Imágenes:</label>
             <label className={styles.fileLabel}>
               <span className={styles.uploadIcon}>📸</span>
               {selectedFiles.length > 0
                 ? `${selectedFiles.length} seleccionadas`
-                : "Subir fotos desde la galería"}
+                : "Subir fotos de galería"}
               <input
                 type="file"
                 multiple
@@ -246,7 +288,6 @@ function Admin() {
                 className={styles.hiddenFileInput}
               />
             </label>
-
             {previews.length > 0 && (
               <div className={styles.previewContainer}>
                 {previews.map((url, index) => (
@@ -267,10 +308,32 @@ function Admin() {
 
           <div className={styles.row}>
             <div className={styles.formGroup}>
+              <label>Color:</label>
+              <input
+                name="color"
+                placeholder="Ej: Blanco"
+                onChange={handleChange}
+                value={formData.color}
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label>Año:</label>
+              <input
+                name="anio"
+                placeholder="Ej: 2020"
+                type="number"
+                onChange={handleChange}
+                value={formData.anio}
+              />
+            </div>
+          </div>
+
+          <div className={styles.row}>
+            <div className={styles.formGroup}>
               <label>Motor:</label>
               <input
                 name="motor"
-                placeholder="Ej: 1.6 TDI"
+                placeholder="Ej: 1.6 Turbo"
                 onChange={handleChange}
                 value={formData.motor}
               />
@@ -303,36 +366,35 @@ function Admin() {
               </select>
             </div>
             <div className={styles.formGroup}>
-              <label>Año:</label>
+              <label>Kilometraje:</label>
               <input
-                placeholder="Ej: 2020"
-                name="anio"
+                name="kilometraje"
+                placeholder="Ej: 75000"
                 type="number"
                 onChange={handleChange}
-                value={formData.anio}
+                value={formData.kilometraje}
               />
             </div>
           </div>
 
+          {/* SECCIÓN DE EQUIPAMIENTO */}
           <div className={styles.formGroup}>
-            <label>Kilometraje:</label>
-            <input
-              placeholder="Ej: 75000"
-              name="kilometraje"
-              type="number"
-              onChange={handleChange}
-              value={formData.kilometraje}
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label>Descripción:</label>
-            <textarea
-              name="descripcion"
-              placeholder="Más información (Ej: Asientos de cuero, A/A, Pantalla 7 pulgadas, etc)"
-              onChange={handleChange}
-              value={formData.descripcion}
-            />
+            <label>Equipamiento destacado:</label>
+            <div className={styles.equipamientoGrid}>
+              {equipamientoOpciones.map((op) => (
+                <label key={op.id} className={styles.equipamientoItem}>
+                  <input
+                    type="checkbox"
+                    name={op.id}
+                    checked={!!equipamientoSeleccionado[op.id]}
+                    onChange={handleEquipamientoChange}
+                  />
+                  <span>
+                    {op.emoji} {op.label}
+                  </span>
+                </label>
+              ))}
+            </div>
           </div>
 
           <label className={styles.checkboxLabel}>
@@ -348,9 +410,7 @@ function Admin() {
           <div className={styles.buttonGroup}>
             <button
               type="submit"
-              className={`${styles.submitBtn} ${
-                cargando ? styles.loading : ""
-              }`}
+              className={styles.submitBtn}
               disabled={cargando}
             >
               {cargando
@@ -365,59 +425,48 @@ function Admin() {
                 onClick={limpiarFormulario}
                 className={styles.cancelBtn}
               >
-                Cancelar Edición
+                Cancelar
               </button>
             )}
           </div>
         </form>
       </section>
 
-      <hr className={styles.divider} />
-
-      {/* --- LISTADO DE AUTOS CARGADOS --- */}
       <section className={styles.listSection}>
         <div className={styles.listHeader}>
           <h3>Inventario ({autos.length} unidades)</h3>
           <input
             type="text"
-            placeholder="🔍 Buscar auto por nombre..."
+            placeholder="🔍 Buscar..."
             className={styles.searchAdminInput}
             onChange={(e) => setFiltroAdmin(e.target.value)}
           />
         </div>
-
         <div className={styles.listaBorrar}>
-          {autosFiltrados.length > 0 ? (
-            autosFiltrados.map((auto) => (
-              <div key={auto.id} className={styles.itemBorrar}>
-                <div className={styles.itemInfo}>
-                  <span className={styles.itemName}>{auto.nombre}</span>
-                  <span className={styles.itemDetails}>
-                    {auto.precio && Number(auto.precio) !== 0
-                      ? `$ ${Number(auto.precio).toLocaleString("es-AR")}`
-                      : "Consultar"}{" "}
-                    | Visitas: {auto.visitas}
-                  </span>
-                </div>
-                <div className={styles.acciones}>
-                  <button
-                    onClick={() => prepararEdicion(auto)}
-                    className={styles.editBtn}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => handleDelete(auto.id)}
-                    className={styles.deleteBtn}
-                  >
-                    Borrar
-                  </button>
-                </div>
+          {autosFiltrados.map((auto) => (
+            <div key={auto.id} className={styles.itemBorrar}>
+              <div className={styles.itemInfo}>
+                <span className={styles.itemName}>{auto.nombre}</span>
+                <span className={styles.itemDetails}>
+                  Visitas: {auto.visitas || 0}
+                </span>
               </div>
-            ))
-          ) : (
-            <p className={styles.emptyMsg}>No se encontraron vehículos.</p>
-          )}
+              <div className={styles.acciones}>
+                <button
+                  onClick={() => prepararEdicion(auto)}
+                  className={styles.editBtn}
+                >
+                  Editar
+                </button>
+                <button
+                  onClick={() => handleDelete(auto.id)}
+                  className={styles.deleteBtn}
+                >
+                  Borrar
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     </div>

@@ -42,7 +42,7 @@ function Featuress() {
     {
       icon: <Award size={40} className={styles.icon} />,
       title: "Experiencia",
-      desc: "Más de 50 años de trayectoria en el mercado nos avalan."
+      desc: "Más de 30 años de trayectoria en el mercado nos avalan."
     },
     {
       icon: <ShieldCheck size={40} className={styles.icon} />,

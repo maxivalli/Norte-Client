@@ -24,7 +24,6 @@ function CarModal({ auto, onClose }) {
   // 1. EFECTO PARA CONTAR VISITA AL ABRIR EL MODAL
   useEffect(() => {
     if (auto && auto.id) {
-      // URL de tu servidor backend en Railway
       const backendUrl = "https://norte-production.up.railway.app";
       
       fetch(`${backendUrl}/api/autos/${auto.id}/visita`, {
@@ -44,7 +43,7 @@ function CarModal({ auto, onClose }) {
 
   const fotos = auto.imagenes || [];
 
-  // 2. FUNCIÓN PARA COMPARTIR (Apunta al servidor para que WhatsApp vea la foto)
+  // 2. FUNCIÓN PARA COMPARTIR
   const generarLinkCompartir = (nombre) => {
     const slug = nombre
       .toLowerCase()
@@ -58,7 +57,7 @@ function CarModal({ auto, onClose }) {
 
   const handleCompartir = () => {
     const url = generarLinkCompartir(auto.nombre);
-    const texto = `Mira este ${auto.nombre} en Norte Automotores: `;
+    const texto = `Mira este ${auto.nombre} en Norte Automotores `;
 
     if (navigator.share) {
       navigator
@@ -160,7 +159,11 @@ function CarModal({ auto, onClose }) {
               <Fuel size={18} />
               <span><strong>Combustible:</strong> {auto.combustible || "Nafta"}</span>
             </div>
-            {/* NUEVO: Contador de Visitas */}
+            {/* CORRECCIÓN: Se agrega el campo Color */}
+            <div className={styles.specItem}>
+              <Palette size={18} />
+              <span><strong>Color:</strong> {auto.color || "Consultar"}</span>
+            </div>
             <div className={styles.specItem}>
               <Eye size={18} />
               <span><strong>Visitas:</strong> {visitasLocales}</span>
@@ -168,8 +171,9 @@ function CarModal({ auto, onClose }) {
           </div>
 
           <div className={styles.descriptionSection}>
-            <h4>Descripción:</h4>
-            <p className={styles.descriptionText}>
+            <h4>Equipamiento y descripción:</h4>
+            {/* CORRECCIÓN: Se agrega whiteSpace: "pre-line" para los saltos de línea del Admin */}
+            <p className={styles.descriptionText} style={{ whiteSpace: "pre-line" }}>
               {auto.descripcion || auto.description || "Sin descripción disponible."}
             </p>
           </div>
