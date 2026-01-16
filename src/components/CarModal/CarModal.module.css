@@ -216,6 +216,43 @@
 .navBtnLeft { left: 20px; }
 .navBtnRight { right: 20px; }
 
+/* Botón Compartir */
+.shareBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px; /* Separación con el botón de WhatsApp */
+  background-color: #f0f0f0; /* Color gris suave para diferenciarlo */
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.shareBtn:hover {
+  background-color: #e5e5e5;
+  border-color: #ccc;
+}
+
+.shareBtn svg {
+  color: #555;
+}
+
+/* Ajuste del botón de WhatsApp para que no quede pegado */
+.submitBtn {
+  margin-top: 0 !important; /* Quitamos margen superior si lo tuviera */
+}
+
+/* Opcional: Si el botón de "Copiado" cambia de color */
+.shareBtn:active {
+  transform: scale(0.98);
+}
+
 /* Responsive */
 @media (max-width: 850px) {
   .modal {

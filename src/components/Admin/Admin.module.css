@@ -65,7 +65,7 @@
 /* BOTONES */
 .buttonGroup { display: flex; gap: 12px; margin-top: 20px; }
 .submitBtn { flex: 2; background: #28a745; color: white; padding: 14px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
-.cancelBtn { flex: 1; background: #6c757d; color: white; border: none; border-radius: 10px; cursor: pointer; }
+.cancelBtn { flex: 1; background: #6c757d; color: white; border: none; padding: 14px; border-radius: 10px; cursor: pointer; }
 .submitBtn:disabled { background: #ccc; cursor: wait; }
 
 /* Contenedor de la opción Reservado */

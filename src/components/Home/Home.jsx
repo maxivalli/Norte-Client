@@ -1,4 +1,5 @@
 import React from "react";
+import { useParams } from "react-router-dom"; // Importamos useParams
 import Header from "../Header/Header";
 import Hero from "../Hero/Hero";
 import Featuress from "../Featuress/Featuress";
@@ -7,13 +8,16 @@ import Contact from "../Contact/Contact";
 import Footer from "../Footer/Footer";
 
 function Home() {
+  const { slug } = useParams(); // Capturamos el slug de la URL (/auto/:slug)
+
   return (
     <main>
       <Header />
       <Hero />
       <Featuress />
       <div id="catalogo">
-        <Catalog />
+        {/* Le pasamos el slug al catálogo */}
+        <Catalog autoUrl={slug} />
       </div>
       <Contact />
       <Footer />

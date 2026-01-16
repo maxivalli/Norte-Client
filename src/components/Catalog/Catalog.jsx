@@ -3,13 +3,13 @@ import styles from "./Catalog.module.css";
 import CarModal from "../CarModal/CarModal.jsx";
 import { Search, ChevronDown } from "lucide-react";
 
-function Catalog() {
+// Recibimos autoUrl como prop desde Home.jsx
+function Catalog({ autoUrl }) {
   const [autos, setAutos] = useState([]);
   const [busqueda, setBusqueda] = useState("");
   const [orden, setOrden] = useState("recientes");
   const [selectedAuto, setSelectedAuto] = useState(null);
 
-  // URL dinámica: detecta si estás en Local o Railway automáticamente
   const API_URL = window.location.hostname === "localhost" 
     ? "http://localhost:5001/api/autos" 
     : "https://norte-production.up.railway.app/api/autos";
@@ -19,15 +19,37 @@ function Catalog() {
       try {
         const res = await fetch(API_URL);
         const data = await res.json();
-        setAutos(Array.isArray(data) ? data : []);
+        const listaAutos = Array.isArray(data) ? data : [];
+        setAutos(listaAutos);
+
+        // --- LÓGICA DE APERTURA AUTOMÁTICA POR URL ---
+        if (autoUrl) {
+          const encontrado = listaAutos.find(auto => {
+            const slugGenerado = auto.nombre.toLowerCase().trim()
+              .replace(/[^\w\s-]/g, "")
+              .replace(/[\s_-]+/g, "-")
+              .replace(/^-+|-+$/g, "");
+            return slugGenerado === autoUrl;
+          });
+
+          if (encontrado) {
+            setSelectedAuto(encontrado);
+          }
+        }
       } catch (err) {
         console.error("Error al cargar autos:", err);
       }
     };
     obtenerAutos();
-  }, [API_URL]);
+  }, [API_URL, autoUrl]); // Se ejecuta si cambia la API o el slug de la URL
 
-  // Procesamiento simple: Filtro y Orden directo por el valor numérico
+  // Función para cerrar el modal y limpiar la barra de direcciones
+  const handleCloseModal = () => {
+    setSelectedAuto(null);
+    // Esto vuelve la URL a la raíz (/) sin recargar la página
+    window.history.pushState({}, '', '/');
+  };
+
   const autosProcesados = autos
     .filter((auto) =>
       auto.nombre.toLowerCase().includes(busqueda.toLowerCase())
@@ -35,10 +57,9 @@ function Catalog() {
     .sort((a, b) => {
       const precioA = Number(a.precio) || 0;
       const precioB = Number(b.precio) || 0;
-
       if (orden === "menor-precio") return precioA - precioB;
       if (orden === "mayor-precio") return precioB - precioA;
-      return b.id - a.id; // Recientes
+      return b.id - a.id;
     });
 
   return (
@@ -91,13 +112,11 @@ function Catalog() {
               </div>
               <div className={styles.info}>
                 <h3 className={styles.carName}>{auto.nombre}</h3>
-
                 <p className={styles.price}>
                   {Number(auto.precio) === 0
                     ? "Consultar"
                     : `${auto.moneda} ${Number(auto.precio).toLocaleString("es-AR")}`}
                 </p>
-
                 <div className={styles.detailsRow}>
                   <span>{auto.anio}</span>
                   <span>
@@ -111,7 +130,7 @@ function Catalog() {
       </div>
 
       {selectedAuto && (
-        <CarModal auto={selectedAuto} onClose={() => setSelectedAuto(null)} />
+        <CarModal auto={selectedAuto} onClose={handleCloseModal} />
       )}
     </div>
   );
