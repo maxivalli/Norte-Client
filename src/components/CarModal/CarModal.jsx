@@ -32,7 +32,7 @@ function CarModal({ auto, onClose }) {
       .replace(/^-+|-+$/g, "");
 
     // IMPORTANTE: Ahora apunta a /share para que WhatsApp vea la imagen
-    return `https://norte-production.up.railway.app/share/auto/${slug}`;
+    return `https://norteautomotores.up.railway.app/share/auto/${slug}`;
   };
 
   const handleCompartir = () => {

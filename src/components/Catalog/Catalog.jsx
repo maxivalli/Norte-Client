@@ -3,7 +3,6 @@ import styles from "./Catalog.module.css";
 import CarModal from "../CarModal/CarModal.jsx";
 import { Search, ChevronDown } from "lucide-react";
 
-// Recibimos autoUrl como prop desde Home.jsx
 function Catalog({ autoUrl }) {
   const [autos, setAutos] = useState([]);
   const [busqueda, setBusqueda] = useState("");
@@ -14,6 +13,14 @@ function Catalog({ autoUrl }) {
     ? "http://localhost:5001/api/autos" 
     : "https://norte-production.up.railway.app/api/autos";
 
+  // Función auxiliar para generar el slug (la misma que usa el servidor)
+  const generarSlug = (nombre) => {
+    return nombre.toLowerCase().trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/[\s_-]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  };
+
   useEffect(() => {
     const obtenerAutos = async () => {
       try {
@@ -22,16 +29,9 @@ function Catalog({ autoUrl }) {
         const listaAutos = Array.isArray(data) ? data : [];
         setAutos(listaAutos);
 
-        // --- LÓGICA DE APERTURA AUTOMÁTICA POR URL ---
+        // --- APERTURA AUTOMÁTICA AL CARGAR ---
         if (autoUrl) {
-          const encontrado = listaAutos.find(auto => {
-            const slugGenerado = auto.nombre.toLowerCase().trim()
-              .replace(/[^\w\s-]/g, "")
-              .replace(/[\s_-]+/g, "-")
-              .replace(/^-+|-+$/g, "");
-            return slugGenerado === autoUrl;
-          });
-
+          const encontrado = listaAutos.find(auto => generarSlug(auto.nombre) === autoUrl);
           if (encontrado) {
             setSelectedAuto(encontrado);
           }
@@ -41,13 +41,20 @@ function Catalog({ autoUrl }) {
       }
     };
     obtenerAutos();
-  }, [API_URL, autoUrl]); // Se ejecuta si cambia la API o el slug de la URL
+  }, [API_URL, autoUrl]);
 
-  // Función para cerrar el modal y limpiar la barra de direcciones
+  // --- NUEVA FUNCIÓN PARA ABRIR AUTO Y CAMBIAR URL ---
+  const handleOpenModal = (auto) => {
+    setSelectedAuto(auto);
+    const slug = generarSlug(auto.nombre);
+    // Cambia la URL en la barra de direcciones sin recargar
+    window.history.pushState(null, "", `/auto/${slug}`);
+  };
+
+  // --- FUNCIÓN PARA CERRAR Y LIMPIAR URL ---
   const handleCloseModal = () => {
     setSelectedAuto(null);
-    // Esto vuelve la URL a la raíz (/) sin recargar la página
-    window.history.pushState({}, '', '/');
+    window.history.pushState(null, "", "/");
   };
 
   const autosProcesados = autos
@@ -65,6 +72,7 @@ function Catalog({ autoUrl }) {
   return (
     <div className={styles.catalogSection}>
       <div className={styles.container}>
+        {/* Barra de búsqueda y ordenamiento */}
         <div className={styles.topBar}>
           <div className={styles.searchBox}>
             <Search size={20} className={styles.searchIcon} />
@@ -94,12 +102,13 @@ function Catalog({ autoUrl }) {
           </div>
         </div>
 
+        {/* Grilla de autos */}
         <div className={styles.grid}>
           {autosProcesados.map((auto) => (
             <div
               key={auto.id}
               className={styles.card}
-              onClick={() => setSelectedAuto(auto)}
+              onClick={() => handleOpenModal(auto)} // Usamos la nueva función
             >
               <div className={styles.imageWrapper}>
                 <img
