@@ -11,9 +11,10 @@ function Admin() {
   const [previews, setPreviews] = useState([]);
   const [cargando, setCargando] = useState(false);
 
-  const API_URL = window.location.hostname === "localhost" 
-    ? "http://localhost:5001/api/autos" 
-    : "https://norte-production.up.railway.app/api/autos";
+  const API_URL =
+    window.location.hostname === "localhost"
+      ? "http://localhost:5001/api/autos"
+      : "https://norte-production.up.railway.app/api/autos";
 
   const initialForm = {
     nombre: "",
@@ -63,7 +64,7 @@ function Admin() {
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
     setSelectedFiles(files);
-    const newPreviews = files.map(file => URL.createObjectURL(file));
+    const newPreviews = files.map((file) => URL.createObjectURL(file));
     setPreviews(newPreviews);
   };
 
@@ -77,18 +78,21 @@ function Admin() {
   // --- SUBIDA A CLOUDINARY ---
   const uploadImagesToCloudinary = async (files) => {
     const uploadedUrls = [];
-    const uploadPreset = "norte_autos"; 
-    const cloudName = "det2xmstl";     
+    const uploadPreset = "norte_autos";
+    const cloudName = "det2xmstl";
 
     for (const file of files) {
       const data = new FormData();
       data.append("file", file);
       data.append("upload_preset", uploadPreset);
       try {
-        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-          method: "POST",
-          body: data,
-        });
+        const res = await fetch(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          {
+            method: "POST",
+            body: data,
+          }
+        );
         const resData = await res.json();
         if (resData.secure_url) uploadedUrls.push(resData.secure_url);
       } catch (err) {
@@ -107,7 +111,9 @@ function Admin() {
 
       if (selectedFiles.length > 0) {
         const nuevasUrls = await uploadImagesToCloudinary(selectedFiles);
-        urlsFinales = editandoId ? [...formData.imagenes, ...nuevasUrls] : nuevasUrls;
+        urlsFinales = editandoId
+          ? [...formData.imagenes, ...nuevasUrls]
+          : nuevasUrls;
       }
 
       const autoParaEnviar = {
@@ -118,14 +124,19 @@ function Admin() {
         kilometraje: Number(formData.kilometraje),
       };
 
-      const res = await fetch(editandoId ? `${API_URL}/${editandoId}` : API_URL, {
-        method: editandoId ? "PUT" : "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(autoParaEnviar),
-      });
+      const res = await fetch(
+        editandoId ? `${API_URL}/${editandoId}` : API_URL,
+        {
+          method: editandoId ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(autoParaEnviar),
+        }
+      );
 
       if (res.ok) {
-        alert(editandoId ? "✅ Actualizado correctamente" : "🚀 Publicado con éxito");
+        alert(
+          editandoId ? "✅ Actualizado correctamente" : "🚀 Publicado con éxito"
+        );
         limpiarFormulario();
         cargarAutos();
       }
@@ -153,7 +164,7 @@ function Admin() {
     if (window.confirm("¿Eliminar este vehículo?")) {
       try {
         const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-        if(res.ok) cargarAutos();
+        if (res.ok) cargarAutos();
       } catch (err) {
         console.error(err);
       }
@@ -177,28 +188,46 @@ function Admin() {
           <h1>{editandoId ? "📝 Editando" : "🚗 Panel de Carga"}</h1>
           <p>Norte Automotores</p>
         </div>
-        <button onClick={cerrarSesion} className={styles.logoutBtn}>Cerrar Sesión</button>
+        <button onClick={cerrarSesion} className={styles.logoutBtn}>
+          Cerrar Sesión
+        </button>
       </header>
 
       <section className={styles.formSection}>
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
             <label>Título / Marca y Modelo:</label>
-            <input name="nombre" placeholder="Ej: VW Golf 2020" onChange={handleChange} value={formData.nombre} required />
+            <input
+              name="nombre"
+              placeholder="Ej: VW Golf 2020"
+              onChange={handleChange}
+              value={formData.nombre}
+              required
+            />
           </div>
 
           <div className={styles.row}>
             <div className={styles.formGroup}>
               <label>Moneda:</label>
-              <select name="moneda" onChange={handleChange} value={formData.moneda}>
-                
+              <select
+                name="moneda"
+                onChange={handleChange}
+                value={formData.moneda}
+              >
                 <option value="$">$ Pesos</option>
                 <option value="U$S">U$S Dólares</option>
               </select>
             </div>
-            <div className={styles.formGroup} style={{flex: 2}}>
+            <div className={styles.formGroup} style={{ flex: 2 }}>
               <label>Precio:</label>
-              <input placeholder= "Para mostrar 'Consultar' colocar 0"name="precio" type="number" onChange={handleChange} value={formData.precio} required />
+              <input
+                placeholder="Para mostrar 'Consultar' colocar 0"
+                name="precio"
+                type="number"
+                onChange={handleChange}
+                value={formData.precio}
+                required
+              />
             </div>
           </div>
 
@@ -206,8 +235,16 @@ function Admin() {
             <label>Imágenes (Desde Galería):</label>
             <label className={styles.fileLabel}>
               <span className={styles.uploadIcon}>📸</span>
-              {selectedFiles.length > 0 ? `${selectedFiles.length} seleccionadas` : "Subir fotos desde la galería"}
-              <input type="file" multiple accept="image/*" onChange={handleFileChange} className={styles.hiddenFileInput} />
+              {selectedFiles.length > 0
+                ? `${selectedFiles.length} seleccionadas`
+                : "Subir fotos desde la galería"}
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleFileChange}
+                className={styles.hiddenFileInput}
+              />
             </label>
 
             {previews.length > 0 && (
@@ -215,7 +252,13 @@ function Admin() {
                 {previews.map((url, index) => (
                   <div key={index} className={styles.previewItem}>
                     <img src={url} alt="Previa" />
-                    <button type="button" onClick={() => removeSelectedFile(index)} className={styles.removePreview}>✕</button>
+                    <button
+                      type="button"
+                      onClick={() => removeSelectedFile(index)}
+                      className={styles.removePreview}
+                    >
+                      ✕
+                    </button>
                   </div>
                 ))}
               </div>
@@ -225,11 +268,20 @@ function Admin() {
           <div className={styles.row}>
             <div className={styles.formGroup}>
               <label>Motor:</label>
-              <input name="motor" placeholder="Ej: 1.6 TDI" onChange={handleChange} value={formData.motor} />
+              <input
+                name="motor"
+                placeholder="Ej: 1.6 TDI"
+                onChange={handleChange}
+                value={formData.motor}
+              />
             </div>
             <div className={styles.formGroup}>
               <label>Transmisión:</label>
-              <select name="transmision" onChange={handleChange} value={formData.transmision}>
+              <select
+                name="transmision"
+                onChange={handleChange}
+                value={formData.transmision}
+              >
                 <option value="Manual">Manual</option>
                 <option value="Automática">Automática</option>
               </select>
@@ -239,7 +291,11 @@ function Admin() {
           <div className={styles.row}>
             <div className={styles.formGroup}>
               <label>Combustible:</label>
-              <select name="combustible" onChange={handleChange} value={formData.combustible}>
+              <select
+                name="combustible"
+                onChange={handleChange}
+                value={formData.combustible}
+              >
                 <option value="Nafta">Nafta</option>
                 <option value="Diesel">Diesel</option>
                 <option value="Híbrido">Híbrido</option>
@@ -248,31 +304,69 @@ function Admin() {
             </div>
             <div className={styles.formGroup}>
               <label>Año:</label>
-              <input placeholder="Ej: 2020" name="anio" type="number" onChange={handleChange} value={formData.anio} />
+              <input
+                placeholder="Ej: 2020"
+                name="anio"
+                type="number"
+                onChange={handleChange}
+                value={formData.anio}
+              />
             </div>
           </div>
 
           <div className={styles.formGroup}>
             <label>Kilometraje:</label>
-            <input placeholder= "Ej: 75000" name="kilometraje" type="number" onChange={handleChange} value={formData.kilometraje} />
+            <input
+              placeholder="Ej: 75000"
+              name="kilometraje"
+              type="number"
+              onChange={handleChange}
+              value={formData.kilometraje}
+            />
           </div>
 
           <div className={styles.formGroup}>
             <label>Descripción:</label>
-            <textarea name="descripcion" placeholder="Más información (Ej: Asientos de cuero, A/A, Pantalla 7 pulgadas, etc)" onChange={handleChange} value={formData.descripcion} />
+            <textarea
+              name="descripcion"
+              placeholder="Más información (Ej: Asientos de cuero, A/A, Pantalla 7 pulgadas, etc)"
+              onChange={handleChange}
+              value={formData.descripcion}
+            />
           </div>
 
           <label className={styles.checkboxLabel}>
-            <input type="checkbox" name="reservado" onChange={handleChange} checked={formData.reservado} />
+            <input
+              type="checkbox"
+              name="reservado"
+              onChange={handleChange}
+              checked={formData.reservado}
+            />
             Marcar como RESERVADO
           </label>
 
           <div className={styles.buttonGroup}>
-            <button type="submit" className={`${styles.submitBtn} ${cargando ? styles.loading : ""}`} disabled={cargando}>
-              {cargando ? "⏳ Subiendo..." : editandoId ? "💾 Guardar Cambios" : "🚀 Publicar"}
+            <button
+              type="submit"
+              className={`${styles.submitBtn} ${
+                cargando ? styles.loading : ""
+              }`}
+              disabled={cargando}
+            >
+              {cargando
+                ? "⏳ Subiendo..."
+                : editandoId
+                ? "💾 Guardar Cambios"
+                : "🚀 Publicar"}
             </button>
             {editandoId && (
-              <button type="button" onClick={limpiarFormulario} className={styles.cancelBtn}>Cancelar Edición</button>
+              <button
+                type="button"
+                onClick={limpiarFormulario}
+                className={styles.cancelBtn}
+              >
+                Cancelar Edición
+              </button>
             )}
           </div>
         </form>
@@ -284,11 +378,11 @@ function Admin() {
       <section className={styles.listSection}>
         <div className={styles.listHeader}>
           <h3>Inventario ({autos.length} unidades)</h3>
-          <input 
-            type="text" 
-            placeholder="🔍 Buscar auto por nombre..." 
-            className={styles.searchAdminInput} 
-            onChange={(e) => setFiltroAdmin(e.target.value)} 
+          <input
+            type="text"
+            placeholder="🔍 Buscar auto por nombre..."
+            className={styles.searchAdminInput}
+            onChange={(e) => setFiltroAdmin(e.target.value)}
           />
         </div>
 
@@ -299,12 +393,25 @@ function Admin() {
                 <div className={styles.itemInfo}>
                   <span className={styles.itemName}>{auto.nombre}</span>
                   <span className={styles.itemDetails}>
-                    {auto.moneda} {auto.precio?.toLocaleString()} | {auto.anio}
+                    {auto.precio && Number(auto.precio) !== 0
+                      ? `$ ${Number(auto.precio).toLocaleString("es-AR")}`
+                      : "Consultar"}{" "}
+                    | Visitas: {auto.visitas}
                   </span>
                 </div>
                 <div className={styles.acciones}>
-                  <button onClick={() => prepararEdicion(auto)} className={styles.editBtn}>Editar</button>
-                  <button onClick={() => handleDelete(auto.id)} className={styles.deleteBtn}>Borrar</button>
+                  <button
+                    onClick={() => prepararEdicion(auto)}
+                    className={styles.editBtn}
+                  >
+                    Editar
+                  </button>
+                  <button
+                    onClick={() => handleDelete(auto.id)}
+                    className={styles.deleteBtn}
+                  >
+                    Borrar
+                  </button>
                 </div>
               </div>
             ))
