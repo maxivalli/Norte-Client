@@ -23,6 +23,7 @@ function CarModal({ auto, onClose }) {
   const fotos = auto.imagenes || [];
 
   // Función para formatear el link usando la ruta de "share"
+  c// Función para formatear el link directo
   const generarLinkCompartir = (nombre) => {
     const slug = nombre
       .toLowerCase()
@@ -31,8 +32,8 @@ function CarModal({ auto, onClose }) {
       .replace(/[\s_-]+/g, "-")
       .replace(/^-+|-+$/g, "");
 
-    // IMPORTANTE: Ahora apunta a /share para que WhatsApp vea la imagen
-    return `https://norte-production.up.railway.app/share/auto/${slug}`;
+    // Ahora el link es el directo, el servidor se encargará del resto
+    return `https://norteautomotores.up.railway.app/auto/${slug}`;
   };
 
   const handleCompartir = () => {
