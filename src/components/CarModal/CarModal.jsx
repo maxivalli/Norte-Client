@@ -10,19 +10,19 @@ import {
   Calendar,
   Fuel,
   Activity,
-  Share2, // Importamos el icono de compartir
+  Share2,
 } from "lucide-react";
 
 function CarModal({ auto, onClose }) {
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
-  const [copiado, setCopiado] = useState(false); // Estado para feedback de copiado
+  const [copiado, setCopiado] = useState(false);
 
   if (!auto) return null;
 
   const fotos = auto.imagenes || [];
 
-  // Función para formatear el link
+  // Función para formatear el link usando la ruta de "share"
   const generarLinkCompartir = (nombre) => {
     const slug = nombre
       .toLowerCase()
@@ -31,7 +31,8 @@ function CarModal({ auto, onClose }) {
       .replace(/[\s_-]+/g, "-")
       .replace(/^-+|-+$/g, "");
 
-    return `https://norteautomotores.up.railway.app/auto/${slug}`;
+    // IMPORTANTE: Ahora apunta a /share para que WhatsApp vea la imagen
+    return `https://norte-production.up.railway.app/share/auto/${slug}`;
   };
 
   const handleCompartir = () => {
@@ -47,9 +48,10 @@ function CarModal({ auto, onClose }) {
         })
         .catch(console.error);
     } else {
+      // En PC, copiamos el link al portapapeles
       navigator.clipboard.writeText(`${texto} ${url}`);
       setCopiado(true);
-      setTimeout(() => setCopiado(false), 2000); // El mensaje desaparece en 2 seg
+      setTimeout(() => setCopiado(false), 2000);
     }
   };
 
@@ -163,7 +165,6 @@ function CarModal({ auto, onClose }) {
             </p>
           </div>
 
-          {/* --- NUEVO BOTÓN COMPARTIR --- */}
           <button onClick={handleCompartir} className={styles.shareBtn}>
             <Share2 size={18} />
             {copiado ? "¡Enlace Copiado!" : "Compartir Vehículo"}
@@ -189,19 +190,18 @@ function CarModal({ auto, onClose }) {
         </div>
       </div>
 
-      {/* --- MODO ZOOM --- */}
       {isZoomed && (
         <div
           className={styles.fullScreenOverlay}
           onClick={(e) => {
-            e.stopPropagation(); // Evita que el clic llegue al overlay del modal de abajo
+            e.stopPropagation();
             setIsZoomed(false);
           }}
         >
           <button
             className={styles.closeZoom}
             onClick={(e) => {
-              e.stopPropagation(); // Evita que se cierre el modal principal
+              e.stopPropagation();
               setIsZoomed(false);
             }}
           >
@@ -213,17 +213,16 @@ function CarModal({ auto, onClose }) {
               <button
                 className={styles.navBtnLeft}
                 onClick={(e) => {
-                  e.stopPropagation(); // Evita que se cierre al navegar
+                  e.stopPropagation();
                   prevImage(e);
                 }}
               >
-                {/* Espaciador invisible si fuera necesario */}
                 <ChevronLeft size={48} color="white" />
               </button>
               <button
                 className={styles.navBtnRight}
                 onClick={(e) => {
-                  e.stopPropagation(); // Evita que se cierre al navegar
+                  e.stopPropagation();
                   nextImage(e);
                 }}
               >
@@ -236,7 +235,7 @@ function CarModal({ auto, onClose }) {
             src={fotos[currentImgIndex]}
             alt="Zoom"
             className={styles.fullScreenImage}
-            onClick={(e) => e.stopPropagation()} // Evita que el clic en la imagen cierre el zoom
+            onClick={(e) => e.stopPropagation()}
           />
         </div>
       )}
