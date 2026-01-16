@@ -23,18 +23,17 @@ function CarModal({ auto, onClose }) {
   const fotos = auto.imagenes || [];
 
   // Función para formatear el link usando la ruta de "share"
-  c// Función para formatear el link directo
   const generarLinkCompartir = (nombre) => {
-    const slug = nombre
-      .toLowerCase()
-      .trim()
-      .replace(/[^\w\s-]/g, "")
-      .replace(/[\s_-]+/g, "-")
-      .replace(/^-+|-+$/g, "");
+  const slug = nombre
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 
-    // Ahora el link es el directo, el servidor se encargará del resto
-    return `https://norteautomotores.up.railway.app/auto/${slug}`;
-  };
+  // IMPORTANTE: Apuntamos al dominio del FRONTEND
+  return `https://norteautomotores.up.railway.app/share/auto/${slug}`;
+};
 
   const handleCompartir = () => {
     const url = generarLinkCompartir(auto.nombre);
