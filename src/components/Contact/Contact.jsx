@@ -44,8 +44,8 @@ function Contact() {
         <div className={styles.info}>
           <h3>Información de Venta</h3>
 
-          <a href="https://www.google.com/maps/search/?api=1&query=Caseros+950+San+Cristobal" target="_blank" rel="noopener noreferrer">
-            <MapPin size={20} /> Caseros 950 - San Cristóbal
+          <a href="https://maps.app.goo.gl/JyS9PcprWS47iFCSA" target="_blank" rel="noopener noreferrer">
+            <MapPin size={20} /> Caseros 985 - San Cristóbal
           </a>
 
           <a href="tel:+543408671423">
