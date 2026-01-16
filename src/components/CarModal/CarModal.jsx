@@ -217,7 +217,6 @@ function CarModal({ auto, onClose }) {
                   prevImage(e);
                 }}
               >
-                <X size={48} color="white" style={{ visibility: "hidden" }} />{" "}
                 {/* Espaciador invisible si fuera necesario */}
                 <ChevronLeft size={48} color="white" />
               </button>
