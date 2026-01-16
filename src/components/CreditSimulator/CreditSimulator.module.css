@@ -1,121 +1,132 @@
 .container {
   max-width: 1200px;
-  margin: 40px auto;
-  padding: 30px;
-  background: #ffffff;
+  margin: 30px auto;
+  padding: 25px;
+  background: white;
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  font-family: sans-serif;
+  box-sizing: border-box; /* Fundamental para que el padding no rompa el ancho */
 }
 
-.container p {
-  font-size: 10px;
-  margin: 0px;
+.header { text-align: center; margin-bottom: 25px; }
+.header h2 { margin: 5px 0; font-size: 1.6rem; color: #222; }
+.icon { color: #25D366; }
+
+/* TABS - Ahora se ven bien en pantallas chicas */
+.tabs {
+  display: flex;
+  background: #f0f0f0;
+  padding: 4px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+  gap: 4px;
+}
+.tabs button {
+  flex: 1;
+  padding: 10px 5px;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.9rem;
+  background: transparent;
+  transition: all 0.3s;
+  color: #666;
+}
+.activeTab {
+  background: white !important;
+  color: #25D366 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.header h2 {
-  font-size: 1.8rem;
-  color: #1a1a1a;
-  margin-bottom: 10px;
-}
-
-.icon { color: #25D366; margin-bottom: 10px; }
-
-/* El Grid que se rompe en mobile */
+/* GRID PRINCIPAL */
 .grid {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Dos columnas en PC */
+  grid-template-columns: 1fr; /* Por defecto una sola columna (Mobile) */
   gap: 30px;
-  align-items: start;
 }
 
-.inputSection {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
+.inputSection { display: flex; flex-direction: column; gap: 15px; }
+.group { display: flex; flex-direction: column; gap: 6px; }
+.group label { font-weight: 600; font-size: 0.85rem; color: #555; }
 
-.group { display: flex; flex-direction: column; gap: 8px; }
-
-.group label { 
-  font-weight: 600; 
-  color: #444; 
-  font-size: 0.9rem; 
-}
-
-.group input, .select {
-  padding: 14px; /* Un poco más grande para dedos en mobile */
+.select, .group input {
+  padding: 12px;
   border: 1px solid #ddd;
-  border-radius: 10px;
+  border-radius: 8px;
   font-size: 1rem;
+  background: #fafafa;
   width: 100%;
   box-sizing: border-box;
 }
 
+/* CUOTAS RESPONSIVE */
 .cuotasGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(3, 1fr); /* 3 columnas en móviles normales */
+  gap: 6px;
 }
-
 .cuotasGrid button {
-  padding: 12px 5px;
+  padding: 10px 2px;
   border: 1px solid #ddd;
   background: white;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s;
+  font-size: 0.8rem;
 }
-
-.cuotasGrid button.activeBtn {
-  background: #1a1a1a;
+.activeBtn {
+  background: #1a1a1a !important;
   color: white;
-  border-color: #1a1a1a;
+  border-color: #1a1a1a !important;
 }
 
-/* Sección de Resultado */
-.resultSection {
-  height: 100%;
-}
-
+/* RESULTADO */
 .resultCard {
-  background: #f8f9fa;
-  padding: 30px;
-  border-radius: 20px;
+  background: #fdfdfd;
+  padding: 20px;
+  border-radius: 15px;
+  border: 1px solid #eee;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  border: 1px solid #eee;
 }
-
 .price { 
-  font-size: 2.2rem; 
+  font-size: 2rem; 
   margin: 10px 0; 
   color: #1a1a1a; 
-  word-break: break-all; /* Evita que el precio se salga del cuadro */
+  word-break: break-all; /* Evita que el precio rompa el cuadro */
 }
+.labelResultado { color: #888; font-size: 0.8rem; }
 
-.infoBox {
+.infoFija, .infoUva {
   display: flex;
+  align-items: flex-start;
   gap: 8px;
-  background: #e7f3ff;
   padding: 12px;
   border-radius: 10px;
-  margin-bottom: 20px;
-  color: #0056b3;
   font-size: 0.8rem;
+  margin: 10px 0;
   text-align: left;
+}
+.infoFija { background: #e8f5e9; color: #2e7d32; }
+.infoUva { background: #e3f2fd; color: #1565c0; }
+
+.detalles {
+  width: 100%;
+  border-top: 1px dashed #ddd;
+  padding-top: 12px;
+  margin-bottom: 15px;
+  font-size: 0.8rem;
+  color: #666;
+  display: flex;
+  justify-content: space-between;
 }
 
 .cta {
   width: 100%;
-  padding: 16px;
+  padding: 14px;
   background: #25D366;
   color: white;
   border: none;
@@ -126,38 +137,31 @@
 }
 
 /* ==========================================
-   MEDIA QUERIES (AQUÍ ESTÁ LA MAGIA)
+   MEDIA QUERIES PARA PANTALLAS GRANDES (Escritorio)
    ========================================== */
 
-@media (max-width: 900px) {
+@media (min-width: 850px) {
   .grid {
-    grid-template-columns: 1fr; /* Pasa a una sola columna */
-    gap: 20px;
+    grid-template-columns: 1.2fr 1fr; /* Vuelve a dos columnas en PC */
   }
-
   .container {
-    padding: 20px;
+    margin: 50px auto;
+    padding: 35px;
   }
-
+  .cuotasGrid {
+    grid-template-columns: repeat(5, 1fr); /* 5 columnas en PC */
+  }
   .price {
-    font-size: 2rem;
+    font-size: 2.4rem;
   }
 }
 
-@media (max-width: 480px) {
-  .header h2 {
-    font-size: 1.5rem;
-  }
-
+/* AJUSTE PARA CELULARES MUY PEQUEÑOS */
+@media (max-width: 380px) {
   .cuotasGrid {
-    grid-template-columns: repeat(2, 1fr); /* 2x2 en celulares muy chicos */
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas en pantallas mini */
   }
-
-  .resultCard {
-    padding: 20px;
-  }
-
-  .price {
-    font-size: 1.8rem;
+  .tabs button {
+    font-size: 0.8rem;
   }
 }
