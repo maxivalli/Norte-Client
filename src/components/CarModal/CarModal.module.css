@@ -172,6 +172,10 @@
   transition: transform 0.2s;
 }
 
+.submitBtn:hover {
+  background-color: black !important;
+}
+
 /* --- ZOOM --- */
 .fullScreenOverlay {
   position: fixed;
@@ -345,7 +349,7 @@
   }
 
   .detailsContent {
-  border-top: 1px solid #eee;
-  max-height: 500px;
-}
+    border-top: 1px solid #eee;
+    max-height: 500px;
+  }
 }
