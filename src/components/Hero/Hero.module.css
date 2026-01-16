@@ -1,21 +1,32 @@
 .hero {
-  height: 80vh; /* Ocupa el 80% de la altura de la pantalla */
+  position: relative;
+  height: 80vh; /* O la altura que tengas definida */
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
+  overflow: hidden; /* Importante para que el zoom no tape el resto */
   color: white;
-  position: relative;
-  /* Imagen de un auto de alta calidad */
-background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
-            url('https://images.unsplash.com/photo-1555215695-3004980ad54e?q=80&w=1920&auto=format&fit=crop');
+  text-align: center;
+}
+
+.heroBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                    url('https://images.unsplash.com/photo-1555215695-3004980ad54e?q=80&w=1920&auto=format&fit=crop'); /* Pon tu ruta aquí */
   background-size: cover;
   background-position: center;
+  z-index: -1;
+  transition: transform 0.1s ease-out; /* Suaviza el movimiento */
+  will-change: transform;
 }
 
 .content {
-  max-width: 1200px;
-  padding: 10px;
+  position: relative;
+  z-index: 1;
 }
 
 .content p {
@@ -58,7 +69,6 @@ background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
   bottom: 20px;
   right: 20px;
   gap: 15px;
-  margin-top: 20px;
 }
 
 .socialIcon {

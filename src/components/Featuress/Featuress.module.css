@@ -1,55 +1,37 @@
 .features {
-  padding: 60px 20px;
-  background-color: #ffffff;
+  padding: 80px 20px;
+  background-color: #f9f9f9;
+  overflow: hidden; /* Evita scroll horizontal mientras vienen de la derecha */
 }
 
 .container {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 30px;
 }
 
 .featureCard {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
   text-align: center;
-  padding: 30px;
-  border-radius: 15px;
-  transition: transform 0.3s ease;
-  background: #fdfdfd;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  
+  /* ESTADO INICIAL: Desplazado 100px a la derecha y transparente */
+  opacity: 0;
+  transform: translateX(100px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
 }
 
-.featureCard:hover {
-  transform: translateY(-5px);
+/* ESTADO CUANDO ENTRA EN PANTALLA */
+.featureCard.isVisible {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .iconWrapper {
   margin-bottom: 20px;
-  display: flex;
-  justify-content: center;
-  color: red; /* Azul principal de tu marca */
-}
-
-.featureCard h3 {
-  font-size: 1.4rem;
-  margin-bottom: 12px;
-  color: #222;
-}
-
-.featureCard p {
-  color: #666;
-  line-height: 1.6;
-  font-size: 0.95rem;
-}
-
-/* RESPONSIVE */
-@media (max-width: 850px) {
-  .container {
-    grid-template-columns: 1fr; /* Una sola columna en móvil */
-    gap: 20px;
-  }
-  
-  .features {
-    padding: 40px 20px;
-  }
+  color: red; /* Ajusta a tu color de marca */
 }
