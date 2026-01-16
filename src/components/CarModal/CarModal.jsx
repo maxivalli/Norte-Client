@@ -160,11 +160,6 @@ function CarModal({ auto, onClose }) {
               <Fuel size={18} />
               <span><strong>Combustible:</strong> {auto.combustible || "Nafta"}</span>
             </div>
-            {/* NUEVO: Campo Color */}
-            <div className={styles.specItem}>
-              <Palette size={18} />
-              <span><strong>Color:</strong> {auto.color || "Consultar"}</span>
-            </div>
             {/* NUEVO: Contador de Visitas */}
             <div className={styles.specItem}>
               <Eye size={18} />
