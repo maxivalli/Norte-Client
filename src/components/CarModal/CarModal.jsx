@@ -184,8 +184,8 @@ function CarModal({ auto, onClose }) {
           {/* SECCIÓN DESPLEGABLE CON DETAILS Y SUMMARY */}
           <details className={styles.detailsSection}>
             <summary className={styles.summaryTitle}>
-              Equipamiento y descripción
               <ChevronDown size={18} className={styles.arrowIcon} />
+              <strong>Equipamiento</strong>
             </summary>
             <div className={styles.detailsContent}>
               <p
