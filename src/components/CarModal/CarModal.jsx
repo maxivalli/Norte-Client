@@ -24,16 +24,16 @@ function CarModal({ auto, onClose }) {
 
   // Función para formatear el link usando la ruta de "share"
   const generarLinkCompartir = (nombre) => {
-  const slug = nombre
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/[\s_-]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+    const slug = nombre
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/[\s_-]+/g, "-")
+      .replace(/^-+|-+$/g, "");
 
-  // IMPORTANTE: Apuntamos al dominio del FRONTEND
-  return `https://norteautomotores.up.railway.app/share/auto/${slug}`;
-};
+    // IMPORTANTE: Ahora apunta a /share para que WhatsApp vea la imagen
+    return `https://norte-production.up.railway.app/share/auto/${slug}`;
+  };
 
   const handleCompartir = () => {
     const url = generarLinkCompartir(auto.nombre);
