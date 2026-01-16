@@ -55,15 +55,14 @@ function CarModal({ auto, onClose }) {
     const texto = `Mirá este ${auto.nombre} en Norte Automotores:`;
 
     if (navigator.share) {
-      navigator
-        .share({
-          title: auto.nombre,
-          text: texto,
-          url: url,
-        })
-        .catch(console.error);
+      navigator.share({
+        title: auto.nombre,
+        text: texto,
+        url: url, // El navegador se encarga de separarlos correctamente
+      });
     } else {
-      navigator.clipboard.writeText(`${texto} ${url}`);
+      // Si copiás al portapapeles, asegurate de poner el SALTO DE LÍNEA (\n)
+      navigator.clipboard.writeText(`${texto}\n\n${url}`);
       alert("¡Enlace copiado al portapapeles!");
     }
   };
@@ -133,7 +132,7 @@ function CarModal({ auto, onClose }) {
                 <strong>Motor:</strong> {auto.motor || "Consultar"}
               </span>
             </div>
-            
+
             <div className={styles.specItem}>
               <Activity size={18} />
               <span>
