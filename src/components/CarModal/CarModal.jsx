@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./CarModal.module.css";
 import {
   X,
@@ -11,18 +11,40 @@ import {
   Fuel,
   Activity,
   Share2,
+  Eye,
+  Palette, // Icono para el color
 } from "lucide-react";
 
 function CarModal({ auto, onClose }) {
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
   const [copiado, setCopiado] = useState(false);
+  const [visitasLocales, setVisitasLocales] = useState(auto?.visitas || 0);
+
+  // 1. EFECTO PARA CONTAR VISITA AL ABRIR EL MODAL
+  useEffect(() => {
+    if (auto && auto.id) {
+      // URL de tu servidor backend en Railway
+      const backendUrl = "https://norte-production.up.railway.app";
+      
+      fetch(`${backendUrl}/api/autos/${auto.id}/visita`, {
+        method: "PATCH",
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.visitas) {
+          setVisitasLocales(data.visitas);
+        }
+      })
+      .catch((err) => console.error("Error al contar visita:", err));
+    }
+  }, [auto]);
 
   if (!auto) return null;
 
   const fotos = auto.imagenes || [];
 
-  // Función para formatear el link usando la ruta de "share"
+  // 2. FUNCIÓN PARA COMPARTIR (Apunta al servidor para que WhatsApp vea la foto)
   const generarLinkCompartir = (nombre) => {
     const slug = nombre
       .toLowerCase()
@@ -31,7 +53,6 @@ function CarModal({ auto, onClose }) {
       .replace(/[\s_-]+/g, "-")
       .replace(/^-+|-+$/g, "");
 
-    // IMPORTANTE: Ahora apunta a /share para que WhatsApp vea la imagen
     return `https://norte-production.up.railway.app/share/auto/${slug}`;
   };
 
@@ -48,7 +69,6 @@ function CarModal({ auto, onClose }) {
         })
         .catch(console.error);
     } else {
-      // En PC, copiamos el link al portapapeles
       navigator.clipboard.writeText(`${texto} ${url}`);
       setCopiado(true);
       setTimeout(() => setCopiado(false), 2000);
@@ -113,55 +133,49 @@ function CarModal({ auto, onClose }) {
             <p className={styles.price}>
               {Number(auto.precio) === 0
                 ? "Consultar"
-                : `${auto.moneda} ${Number(auto.precio).toLocaleString(
-                    "es-AR"
-                  )}`}
+                : `${auto.moneda} ${Number(auto.precio).toLocaleString("es-AR")}`}
             </p>
           </div>
 
           <div className={styles.specsGrid}>
             <div className={styles.specItem}>
               <Settings size={18} />
-              <span>
-                <strong>Motor:</strong> {auto.motor || "Consultar"}
-              </span>
+              <span><strong>Motor:</strong> {auto.motor || "Consultar"}</span>
             </div>
             <div className={styles.specItem}>
               <Activity size={18} />
-              <span>
-                <strong>Transmisión:</strong> {auto.transmision || "Manual"}
-              </span>
+              <span><strong>Transmisión:</strong> {auto.transmision || "Manual"}</span>
             </div>
             <div className={styles.specItem}>
               <Calendar size={18} />
-              <span>
-                <strong>Año:</strong> {auto.anio || "N/A"}
-              </span>
+              <span><strong>Año:</strong> {auto.anio || "N/A"}</span>
             </div>
             <div className={styles.specItem}>
               <Gauge size={18} />
               <span>
-                <strong>KM:</strong>{" "}
-                {auto.kilometraje
-                  ? Number(auto.kilometraje).toLocaleString("es-AR")
-                  : "0"}{" "}
-                km
+                <strong>KM:</strong> {Number(auto.kilometraje || 0).toLocaleString("es-AR")} km
               </span>
             </div>
             <div className={styles.specItem}>
               <Fuel size={18} />
-              <span>
-                <strong>Combustible:</strong> {auto.combustible || "Nafta"}
-              </span>
+              <span><strong>Combustible:</strong> {auto.combustible || "Nafta"}</span>
+            </div>
+            {/* NUEVO: Campo Color */}
+            <div className={styles.specItem}>
+              <Palette size={18} />
+              <span><strong>Color:</strong> {auto.color || "Consultar"}</span>
+            </div>
+            {/* NUEVO: Contador de Visitas */}
+            <div className={styles.specItem}>
+              <Eye size={18} />
+              <span><strong>Visitas:</strong> {visitasLocales}</span>
             </div>
           </div>
 
           <div className={styles.descriptionSection}>
             <h4>Descripción:</h4>
             <p className={styles.descriptionText}>
-              {auto.description ||
-                auto.descripcion ||
-                "Sin descripción disponible."}
+              {auto.descripcion || auto.description || "Sin descripción disponible."}
             </p>
           </div>
 
@@ -191,41 +205,17 @@ function CarModal({ auto, onClose }) {
       </div>
 
       {isZoomed && (
-        <div
-          className={styles.fullScreenOverlay}
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsZoomed(false);
-          }}
-        >
-          <button
-            className={styles.closeZoom}
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsZoomed(false);
-            }}
-          >
+        <div className={styles.fullScreenOverlay} onClick={() => setIsZoomed(false)}>
+          <button className={styles.closeZoom} onClick={() => setIsZoomed(false)}>
             <X size={32} color="white" />
           </button>
 
           {fotos.length > 1 && (
             <>
-              <button
-                className={styles.navBtnLeft}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  prevImage(e);
-                }}
-              >
+              <button className={styles.navBtnLeft} onClick={prevImage}>
                 <ChevronLeft size={48} color="white" />
               </button>
-              <button
-                className={styles.navBtnRight}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  nextImage(e);
-                }}
-              >
+              <button className={styles.navBtnRight} onClick={nextImage}>
                 <ChevronRight size={48} color="white" />
               </button>
             </>
