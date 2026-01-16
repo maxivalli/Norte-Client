@@ -13,6 +13,7 @@ import {
   Share2,
   Eye,
   Palette,
+  ChevronDown, // Importamos para el icono del desplegable
 } from "lucide-react";
 
 function CarModal({ auto, onClose }) {
@@ -27,11 +28,11 @@ function CarModal({ auto, onClose }) {
       fetch(`${backendUrl}/api/autos/${auto.id}/visita`, {
         method: "PATCH",
       })
-      .then(res => res.json())
-      .then(data => {
-        if (data.visitas) setVisitasLocales(data.visitas);
-      })
-      .catch((err) => console.error("Error al contar visita:", err));
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.visitas) setVisitasLocales(data.visitas);
+        })
+        .catch((err) => console.error("Error al contar visita:", err));
     }
   }, [auto]);
 
@@ -53,7 +54,9 @@ function CarModal({ auto, onClose }) {
     const url = generarLinkCompartir(auto.nombre);
     const texto = `Mira este ${auto.nombre} en Norte Automotores `;
     if (navigator.share) {
-      navigator.share({ title: auto.nombre, text: texto, url }).catch(console.error);
+      navigator
+        .share({ title: auto.nombre, text: texto, url })
+        .catch(console.error);
     } else {
       navigator.clipboard.writeText(`${texto} ${url}`);
       setCopiado(true);
@@ -71,9 +74,8 @@ function CarModal({ auto, onClose }) {
     setCurrentImgIndex((prev) => (prev === 0 ? fotos.length - 1 : prev - 1));
   };
 
-  // Función corregida para cerrar el zoom sin cerrar el modal
   const handleCloseZoom = (e) => {
-    e.stopPropagation(); // Evita que el clic llegue al overlay del modal
+    e.stopPropagation();
     setIsZoomed(false);
   };
 
@@ -101,7 +103,6 @@ function CarModal({ auto, onClose }) {
               <Maximize2 size={18} color="white" />
             </div>
           </div>
-
           {fotos.length > 1 && (
             <div className={styles.thumbnailGrid}>
               {fotos.map((img, index) => (
@@ -125,49 +126,78 @@ function CarModal({ auto, onClose }) {
             <p className={styles.price}>
               {Number(auto.precio) === 0
                 ? "Consultar"
-                : `${auto.moneda} ${Math.round(Number(auto.precio)).toLocaleString("es-AR")}`}
+                : `${auto.moneda} ${Math.round(
+                    Number(auto.precio)
+                  ).toLocaleString("es-AR")}`}
             </p>
           </div>
 
           <div className={styles.specsGrid}>
             <div className={styles.specItem}>
               <Settings size={18} />
-              <span><strong>Motor:</strong> {auto.motor || "Consultar"}</span>
+              <span>
+                <strong>Motor:</strong> {auto.motor || "Consultar"}
+              </span>
             </div>
             <div className={styles.specItem}>
               <Activity size={18} />
-              <span><strong>Transmisión:</strong> {auto.transmision || "Manual"}</span>
+              <span>
+                <strong>Transmisión:</strong> {auto.transmision || "Manual"}
+              </span>
             </div>
             <div className={styles.specItem}>
               <Calendar size={18} />
-              <span><strong>Año:</strong> {auto.anio || "N/A"}</span>
+              <span>
+                <strong>Año:</strong> {auto.anio || "N/A"}
+              </span>
             </div>
             <div className={styles.specItem}>
               <Gauge size={18} />
               <span>
-                <strong>KM:</strong> {Math.round(Number(auto.kilometraje || 0)).toLocaleString("es-AR")} km
+                <strong>KM:</strong>{" "}
+                {Math.round(Number(auto.kilometraje || 0)).toLocaleString(
+                  "es-AR"
+                )}{" "}
+                km
               </span>
             </div>
             <div className={styles.specItem}>
               <Fuel size={18} />
-              <span><strong>Combustible:</strong> {auto.combustible || "Nafta"}</span>
+              <span>
+                <strong>Combustible:</strong> {auto.combustible || "Nafta"}
+              </span>
             </div>
             <div className={styles.specItem}>
               <Palette size={18} />
-              <span><strong>Color:</strong> {auto.color || "Consultar"}</span>
+              <span>
+                <strong>Color:</strong> {auto.color || "Consultar"}
+              </span>
             </div>
             <div className={styles.specItem}>
               <Eye size={18} />
-              <span><strong>Visitas:</strong> {visitasLocales}</span>
+              <span>
+                <strong>Visitas:</strong> {visitasLocales}
+              </span>
             </div>
           </div>
 
-          <div className={styles.descriptionSection}>
-            <h4>Equipamiento y descripción:</h4>
-            <p className={styles.descriptionText} style={{ whiteSpace: "pre-line" }}>
-              {auto.descripcion || auto.description || "Sin descripción disponible."}
-            </p>
-          </div>
+          {/* SECCIÓN DESPLEGABLE CON DETAILS Y SUMMARY */}
+          <details className={styles.detailsSection}>
+            <summary className={styles.summaryTitle}>
+              Equipamiento y descripción
+              <ChevronDown size={18} className={styles.arrowIcon} />
+            </summary>
+            <div className={styles.detailsContent}>
+              <p
+                className={styles.descriptionText}
+                style={{ whiteSpace: "pre-line" }}
+              >
+                {auto.descripcion ||
+                  auto.description ||
+                  "Sin descripción disponible."}
+              </p>
+            </div>
+          </details>
 
           <button onClick={handleCompartir} className={styles.shareBtn}>
             <Share2 size={18} />
@@ -194,16 +224,11 @@ function CarModal({ auto, onClose }) {
         </div>
       </div>
 
-      {/* ZOOM MODAL CORREGIDO */}
       {isZoomed && (
-        <div 
-          className={styles.fullScreenOverlay} 
-          onClick={handleCloseZoom} // Usa la función con stopPropagation
-        >
+        <div className={styles.fullScreenOverlay} onClick={handleCloseZoom}>
           <button className={styles.closeZoom} onClick={handleCloseZoom}>
             <X size={32} color="white" />
           </button>
-
           {fotos.length > 1 && (
             <>
               <button className={styles.navBtnLeft} onClick={prevImage}>
@@ -214,12 +239,11 @@ function CarModal({ auto, onClose }) {
               </button>
             </>
           )}
-
           <img
             src={fotos[currentImgIndex]}
             alt="Zoom"
             className={styles.fullScreenImage}
-            onClick={(e) => e.stopPropagation()} // Evita cerrar si haces clic en la imagen misma
+            onClick={(e) => e.stopPropagation()}
           />
         </div>
       )}
