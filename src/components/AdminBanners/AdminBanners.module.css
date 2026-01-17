@@ -1,0 +1,58 @@
+.adminContainer { padding: 20px; max-width: 1000px; margin: 0 auto; }
+
+.headerAdmin {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.uploadBtn {
+  background: #2563eb;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.uploadBtn:hover { background: #1d4ed8; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card img { width: 100%; aspect-ratio: 4/5; object-fit: cover; }
+
+.card button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 0, 0, 0.8);
+  color: white;
+  border: none;
+  padding: 8px 10px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.card button:hover { background: rgba(220, 38, 38, 0.9); }
+
+.spin { animation: rotation 1s linear infinite; }
+@keyframes rotation { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }

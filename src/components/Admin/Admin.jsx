@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import AdminBanners from "../AdminBanners/AdminBanners";
 import styles from "./Admin.module.css";
 
 function Admin() {
@@ -493,6 +494,7 @@ function Admin() {
           ))}
         </div>
       </section>
+      <AdminBanners />
     </div>
   );
 }

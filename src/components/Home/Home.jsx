@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom"; // Importamos useParams
 import Header from "../Header/Header";
 import Hero from "../Hero/Hero";
 import GoogleReviews from "../GoogleReviews/GoogleReviews";
-import Featuress from "../Featuress/Featuress";
+import PromoBanners from "../PromoBanners/PromoBanners";
 import Catalog from "../Catalog/Catalog";
 import Contact from "../Contact/Contact";
 import Footer from "../Footer/Footer";
@@ -16,7 +16,7 @@ function Home() {
       <Header />
       <Hero />
       <GoogleReviews />
-      <Featuress />
+      <PromoBanners />
       <div id="catalogo">
         {/* Le pasamos el slug al catálogo */}
         <Catalog autoUrl={slug} />
