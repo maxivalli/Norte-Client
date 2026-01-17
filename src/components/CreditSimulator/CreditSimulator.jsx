@@ -9,7 +9,7 @@ import {
   Percent, // Icono para tasa cero
 } from "lucide-react";
 
-const CreditSimulator = ({ autos }) => {
+const CreditSimulator = ({ autos, autoPreseleccionado }) => {
   const [tipoTasa, setTipoTasa] = useState("FIJA");
   const [montoVehiculo, setMontoVehiculo] = useState("");
   const [entrega, setEntrega] = useState("");
@@ -19,6 +19,19 @@ const CreditSimulator = ({ autos }) => {
   const [tasaAplicada, setTasaAplicada] = useState(0);
   const [autoSeleccionado, setAutoSeleccionado] = useState(null); // Nuevo: Guardar el objeto auto
   const MIN_ENTREGA_PORCENTAJE = 0.3; // 30%
+
+  useEffect(() => {
+    if (autoPreseleccionado) {
+      setAutoSeleccionado(autoPreseleccionado);
+      setMontoVehiculo(autoPreseleccionado.precio);
+      setAnioAuto(autoPreseleccionado.anio);
+      setEntrega(Math.round(autoPreseleccionado.precio * 0.35));
+
+      if (autoPreseleccionado.etiqueta === "tasa_cero") {
+        setCuotas(12);
+      }
+    }
+  }, [autoPreseleccionado]);
 
   useEffect(() => {
     const valorAuto = parseFloat(montoVehiculo) || 0;
@@ -138,7 +151,14 @@ const CreditSimulator = ({ autos }) => {
           <div className={styles.formSide}>
             <div className={styles.inputBox}>
               <label>Elegir del stock:</label>
-              <select onChange={handleSelectAuto} className={styles.select}>
+              <select
+                onChange={handleSelectAuto}
+                className={styles.select}
+                /* VINCULACIÓN: Si hay un autoSeleccionado, el select mostrará su ID.
+       Si no hay nada, mostrará la opción vacía (Ingreso manual).
+    */
+                value={autoSeleccionado ? autoSeleccionado.id : ""}
+              >
                 <option value="">Ingreso manual de monto</option>
                 {Array.isArray(autos) &&
                   autos

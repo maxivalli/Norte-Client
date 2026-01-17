@@ -9,13 +9,17 @@ function Catalog({ autoUrl }) {
   const [busqueda, setBusqueda] = useState("");
   const [orden, setOrden] = useState("recientes");
   const [selectedAuto, setSelectedAuto] = useState(null);
+  const [autoParaSimular, setAutoParaSimular] = useState(null);
 
-  const API_URL = window.location.hostname === "localhost" 
-    ? "http://localhost:5001/api/autos" 
-    : "https://norte-production.up.railway.app/api/autos";
+  const API_URL =
+    window.location.hostname === "localhost"
+      ? "http://localhost:5001/api/autos"
+      : "https://norte-production.up.railway.app/api/autos";
 
   const generarSlug = (nombre) => {
-    return nombre.toLowerCase().trim()
+    return nombre
+      .toLowerCase()
+      .trim()
       .replace(/[^\w\s-]/g, "")
       .replace(/[\s_-]+/g, "-")
       .replace(/^-+|-+$/g, "");
@@ -30,7 +34,9 @@ function Catalog({ autoUrl }) {
         setAutos(listaAutos);
 
         if (autoUrl) {
-          const encontrado = listaAutos.find(auto => generarSlug(auto.nombre) === autoUrl);
+          const encontrado = listaAutos.find(
+            (auto) => generarSlug(auto.nombre) === autoUrl
+          );
           if (encontrado) {
             setSelectedAuto(encontrado);
           }
@@ -67,21 +73,28 @@ function Catalog({ autoUrl }) {
 
   // --- FUNCIÓN PARA RENDERIZAR LA ETIQUETA ---
   const renderEtiqueta = (auto) => {
-    if (auto.reservado) return <div className={styles.badgeReservado}>RESERVADO</div>;
-    
+    if (auto.reservado)
+      return <div className={styles.badgeReservado}>RESERVADO</div>;
+
     switch (auto.etiqueta) {
-      case 'tasa_cero':
-        return <div className={`${styles.promoBadge} ${styles.badgeTasa}`}>
-          <Percent size={12} /> TASA 0%
-        </div>;
-      case 'bonificado':
-        return <div className={`${styles.promoBadge} ${styles.badgeBonificado}`}>
-          <Gem size={12} /> BONIFICADO
-        </div>;
-      case 'oportunidad':
-        return <div className={`${styles.promoBadge} ${styles.badgeOportunidad}`}>
-          <Sparkles size={12} /> OPORTUNIDAD
-        </div>;
+      case "tasa_cero":
+        return (
+          <div className={`${styles.promoBadge} ${styles.badgeTasa}`}>
+            <Percent size={12} /> TASA 0%
+          </div>
+        );
+      case "bonificado":
+        return (
+          <div className={`${styles.promoBadge} ${styles.badgeBonificado}`}>
+            <Gem size={12} /> BONIFICADO
+          </div>
+        );
+      case "oportunidad":
+        return (
+          <div className={`${styles.promoBadge} ${styles.badgeOportunidad}`}>
+            <Sparkles size={12} /> OPORTUNIDAD
+          </div>
+        );
       default:
         return null;
     }
@@ -139,7 +152,9 @@ function Catalog({ autoUrl }) {
                 <p className={styles.price}>
                   {Number(auto.precio) === 0
                     ? "Consultar"
-                    : `${auto.moneda} ${Number(auto.precio).toLocaleString("es-AR")}`}
+                    : `${auto.moneda} ${Number(auto.precio).toLocaleString(
+                        "es-AR"
+                      )}`}
                 </p>
                 <div className={styles.detailsRow}>
                   <span>{auto.anio}</span>
@@ -154,11 +169,15 @@ function Catalog({ autoUrl }) {
       </div>
 
       {selectedAuto && (
-        <CarModal auto={selectedAuto} onClose={handleCloseModal} />
+        <CarModal
+          auto={selectedAuto}
+          onClose={handleCloseModal}
+          onSimulate={(auto) => setAutoParaSimular(auto)} // Pasamos la función al modal
+        />
       )}
-      <CreditSimulator autos={autos}/>
+      <CreditSimulator autos={autos} autoPreseleccionado={autoParaSimular} />
     </div>
   );
 }
 
-export default Catalog; 
+export default Catalog;

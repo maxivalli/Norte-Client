@@ -13,10 +13,11 @@ import {
   Share2,
   Eye,
   Palette,
-  ChevronDown, // Importamos para el icono del desplegable
+  ChevronDown,
+  Calculator, // Importamos el icono de calculadora
 } from "lucide-react";
 
-function CarModal({ auto, onClose }) {
+function CarModal({ auto, onClose, onSimulate }) {
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
   const [copiado, setCopiado] = useState(false);
@@ -39,6 +40,18 @@ function CarModal({ auto, onClose }) {
   if (!auto) return null;
 
   const fotos = auto.imagenes || [];
+
+  // --- FUNCIÓN PARA IR AL SIMULADOR ---
+  const handleIrAlSimulador = () => {
+    onSimulate(auto); // Avisamos al catálogo qué auto queremos simular
+    onClose();
+    setTimeout(() => {
+      const elemento = document.getElementById("simulador");
+      if (elemento) {
+        elemento.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 100);
+  };
 
   const generarLinkCompartir = (nombre) => {
     const slug = nombre
@@ -181,7 +194,6 @@ function CarModal({ auto, onClose }) {
             </div>
           </div>
 
-          {/* SECCIÓN DESPLEGABLE CON DETAILS Y SUMMARY */}
           <details className={styles.detailsSection}>
             <summary className={styles.summaryTitle}>
               <ChevronDown size={18} className={styles.arrowIcon} />
@@ -199,10 +211,16 @@ function CarModal({ auto, onClose }) {
             </div>
           </details>
 
-          <button onClick={handleCompartir} className={styles.shareBtn}>
-            <Share2 size={18} />
-            {copiado ? "¡Enlace Copiado!" : "Compartir Vehículo"}
-          </button>
+          {/* --- BOTÓN SIMULADOR (NUEVO) --- */}
+          {Number(auto.precio) > 0 && !auto.reservado && (
+            <button
+              onClick={handleIrAlSimulador}
+              className={styles.simulateBtn}
+            >
+              <Calculator size={18} />
+              Simulá tu crédito ahora
+            </button>
+          )}
 
           <button
             onClick={() =>
@@ -220,6 +238,10 @@ function CarModal({ auto, onClose }) {
             disabled={auto.reservado}
           >
             {auto.reservado ? "UNIDAD RESERVADA" : "Consultar por WhatsApp"}
+          </button>
+          <button onClick={handleCompartir} className={styles.shareBtn}>
+            <Share2 size={18} />
+            {copiado ? "¡Enlace Copiado!" : "Compartir Vehículo"}
           </button>
         </div>
       </div>
