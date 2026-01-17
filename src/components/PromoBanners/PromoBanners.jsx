@@ -19,7 +19,6 @@ function PromoBanners() {
       });
   }, []);
 
-  // --- EFECTO DE DESPLAZAMIENTO AUTOMÁTICO ---
   useEffect(() => {
     if (banners.length === 0) return;
 
@@ -27,14 +26,14 @@ function PromoBanners() {
       if (containerRef.current) {
         const { scrollLeft, scrollWidth, clientWidth } = containerRef.current;
         
-        // Si llegamos al final, vuelve al principio, si no, avanza 300px
         if (scrollLeft + clientWidth >= scrollWidth - 10) {
           containerRef.current.scrollTo({ left: 0, behavior: 'smooth' });
         } else {
+          // Ajustamos el desplazamiento para que coincida con el ancho de tus cards + gap
           containerRef.current.scrollBy({ left: 320, behavior: 'smooth' });
         }
       }
-    }, 4000); // Cambia cada 4 segundos
+    }, 4000);
 
     return () => clearInterval(interval);
   }, [banners]);
@@ -45,12 +44,15 @@ function PromoBanners() {
     <section className={styles.promoSection}>
       <div className={styles.container} ref={containerRef}>
         {banners.map((banner) => (
+          /* Envolvemos la imagen con el enlace */
           <div key={banner.id} className={styles.promoCard}>
-            <img 
-              src={banner.imagen_url} 
-              alt={banner.titulo || "Promoción"} 
-              className={styles.bgImage} 
-            />
+            <a href="#catalogo" className={styles.cardLink}>
+              <img 
+                src={banner.imagen_url} 
+                alt={banner.titulo || "Promoción"} 
+                className={styles.bgImage} 
+              />
+            </a>
           </div>
         ))}
       </div>

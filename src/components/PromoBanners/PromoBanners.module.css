@@ -32,6 +32,7 @@
 @media (max-width: 768px) {
   .container {
     margin-left: 20px;
+    margin-right: 20px;
   }
   .promoCard {
     flex: 0 0 85%; /* En móvil se ve una y un poco de la otra */
