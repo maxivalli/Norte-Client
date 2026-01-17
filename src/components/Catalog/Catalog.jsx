@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./Catalog.module.css";
 import CarModal from "../CarModal/CarModal.jsx";
 import CreditSimulator from "../CreditSimulator/CreditSimulator.jsx";
-import { Search, ChevronDown } from "lucide-react";
+import { Search, ChevronDown, Sparkles, Percent, Gem } from "lucide-react"; // Importamos iconos para las etiquetas
 
 function Catalog({ autoUrl }) {
   const [autos, setAutos] = useState([]);
@@ -14,7 +14,6 @@ function Catalog({ autoUrl }) {
     ? "http://localhost:5001/api/autos" 
     : "https://norte-production.up.railway.app/api/autos";
 
-  // Función auxiliar para generar el slug (la misma que usa el servidor)
   const generarSlug = (nombre) => {
     return nombre.toLowerCase().trim()
       .replace(/[^\w\s-]/g, "")
@@ -30,7 +29,6 @@ function Catalog({ autoUrl }) {
         const listaAutos = Array.isArray(data) ? data : [];
         setAutos(listaAutos);
 
-        // --- APERTURA AUTOMÁTICA AL CARGAR ---
         if (autoUrl) {
           const encontrado = listaAutos.find(auto => generarSlug(auto.nombre) === autoUrl);
           if (encontrado) {
@@ -44,15 +42,12 @@ function Catalog({ autoUrl }) {
     obtenerAutos();
   }, [API_URL, autoUrl]);
 
-  // --- NUEVA FUNCIÓN PARA ABRIR AUTO Y CAMBIAR URL ---
   const handleOpenModal = (auto) => {
     setSelectedAuto(auto);
     const slug = generarSlug(auto.nombre);
-    // Cambia la URL en la barra de direcciones sin recargar
     window.history.pushState(null, "", `/auto/${slug}`);
   };
 
-  // --- FUNCIÓN PARA CERRAR Y LIMPIAR URL ---
   const handleCloseModal = () => {
     setSelectedAuto(null);
     window.history.pushState(null, "", "/");
@@ -70,10 +65,31 @@ function Catalog({ autoUrl }) {
       return b.id - a.id;
     });
 
+  // --- FUNCIÓN PARA RENDERIZAR LA ETIQUETA ---
+  const renderEtiqueta = (auto) => {
+    if (auto.reservado) return <div className={styles.badgeReservado}>RESERVADO</div>;
+    
+    switch (auto.etiqueta) {
+      case 'tasa_cero':
+        return <div className={`${styles.promoBadge} ${styles.badgeTasa}`}>
+          <Percent size={12} /> TASA 0%
+        </div>;
+      case 'bonificado':
+        return <div className={`${styles.promoBadge} ${styles.badgeBonificado}`}>
+          <Gem size={12} /> BONIFICADO
+        </div>;
+      case 'oportunidad':
+        return <div className={`${styles.promoBadge} ${styles.badgeOportunidad}`}>
+          <Sparkles size={12} /> OPORTUNIDAD
+        </div>;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className={styles.catalogSection}>
       <div className={styles.container}>
-        {/* Barra de búsqueda y ordenamiento */}
         <div className={styles.topBar}>
           <div className={styles.searchBox}>
             <Search size={20} className={styles.searchIcon} />
@@ -103,22 +119,20 @@ function Catalog({ autoUrl }) {
           </div>
         </div>
 
-        {/* Grilla de autos */}
         <div className={styles.grid}>
           {autosProcesados.map((auto) => (
             <div
               key={auto.id}
               className={styles.card}
-              onClick={() => handleOpenModal(auto)} // Usamos la nueva función
+              onClick={() => handleOpenModal(auto)}
             >
               <div className={styles.imageWrapper}>
                 <img
                   src={auto.imagenes && auto.imagenes[0]}
                   alt={auto.nombre}
                 />
-                {auto.reservado && (
-                  <div className={styles.badgeReservado}>RESERVADO</div>
-                )}
+                {/* Renderizamos la etiqueta aquí */}
+                {renderEtiqueta(auto)}
               </div>
               <div className={styles.info}>
                 <h3 className={styles.carName}>{auto.nombre}</h3>
@@ -147,4 +161,4 @@ function Catalog({ autoUrl }) {
   );
 }
 
-export default Catalog;
+export default Catalog; 

@@ -43,9 +43,10 @@ function Admin() {
     anio: "",
     combustible: "Nafta",
     kilometraje: "",
-    descripcion: "", // Aquí se guardará el string de emojis
+    descripcion: "", 
     color: "",
     reservado: false,
+    etiqueta: "" // <-- NUEVA PROPIEDAD
   };
 
   const [formData, setFormData] = useState(initialForm);
@@ -134,13 +135,11 @@ function Admin() {
     setCargando(true);
 
     try {
-      // 1. Generar el texto de descripción a partir de los checkboxes
       const descripcionConEmojis = equipamientoOpciones
         .filter((op) => equipamientoSeleccionado[op.id])
         .map((op) => `${op.emoji} ${op.label}`)
         .join("\n");
 
-      // 2. Subir imágenes si hay nuevas
       let urlsFinales = formData.imagenes;
       if (selectedFiles.length > 0) {
         const nuevasUrls = await uploadImagesToCloudinary(selectedFiles);
@@ -151,7 +150,7 @@ function Admin() {
 
       const autoParaEnviar = {
         ...formData,
-        descripcion: descripcionConEmojis, // Guardamos el texto prolijo
+        descripcion: descripcionConEmojis,
         imagenes: urlsFinales,
         precio: Math.round(Number(formData.precio)),
         anio: Math.round(Number(formData.anio)),
@@ -191,9 +190,13 @@ function Admin() {
 
   const prepararEdicion = (auto) => {
     setEditandoId(auto.id);
-    setFormData({ ...auto, imagenes: auto.imagenes || [] });
+    // Aseguramos que la etiqueta se cargue si existe, o quede vacía
+    setFormData({ 
+      ...auto, 
+      imagenes: auto.imagenes || [],
+      etiqueta: auto.etiqueta || "" 
+    });
 
-    // Marcar los checkboxes detectando el texto en la descripción
     const nuevosChecks = {};
     equipamientoOpciones.forEach((op) => {
       if (auto.descripcion?.includes(op.label)) {
@@ -377,6 +380,27 @@ function Admin() {
             </div>
           </div>
 
+          {/* --- NUEVA SECCIÓN DE ETIQUETA --- */}
+          <div className={styles.formGroup}>
+            <label>Promoción Especial / Etiqueta:</label>
+            <select
+              name="etiqueta"
+              onChange={handleChange}
+              value={formData.etiqueta || ""}
+              style={{ 
+                border: formData.etiqueta ? '2px solid #25D366' : '1px solid #ddd',
+                padding: '10px',
+                borderRadius: '8px',
+                backgroundColor: formData.etiqueta ? '#f0fff4' : '#fff'
+              }}
+            >
+              <option value="">Sin etiqueta (Venta Normal)</option>
+              <option value="bonificado">💎 Unidad Bonificada</option>
+              <option value="tasa_cero">🔥 Tasa 0% Interés</option>
+              <option value="oportunidad">⚡ Oportunidad / Liquidación</option>
+            </select>
+          </div>
+
           {/* SECCIÓN DE EQUIPAMIENTO */}
           <div className={styles.formGroup}>
             <label>Equipamiento destacado:</label>
@@ -448,7 +472,7 @@ function Admin() {
               <div className={styles.itemInfo}>
                 <span className={styles.itemName}>{auto.nombre}</span>
                 <span className={styles.itemDetails}>
-                  Visitas: {auto.visitas || 0}
+                  Visitas: {auto.visitas || 0} | {auto.etiqueta ? `🏷️ ${auto.etiqueta}` : 'Normal'}
                 </span>
               </div>
               <div className={styles.acciones}>

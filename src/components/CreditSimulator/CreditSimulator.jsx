@@ -6,6 +6,7 @@ import {
   Info,
   CheckCircle,
   Smartphone,
+  Percent, // Icono para tasa cero
 } from "lucide-react";
 
 const CreditSimulator = ({ autos }) => {
@@ -13,57 +14,73 @@ const CreditSimulator = ({ autos }) => {
   const [montoVehiculo, setMontoVehiculo] = useState("");
   const [entrega, setEntrega] = useState("");
   const [cuotas, setCuotas] = useState(24);
-  const [anioAuto, setAnioAuto] = useState(2026); // Año actual
+  const [anioAuto, setAnioAuto] = useState(2026);
   const [resultado, setResultado] = useState(0);
   const [tasaAplicada, setTasaAplicada] = useState(0);
+  const [autoSeleccionado, setAutoSeleccionado] = useState(null); // Nuevo: Guardar el objeto auto
 
   useEffect(() => {
     const valorAuto = parseFloat(montoVehiculo) || 0;
     const valorEntrega = parseFloat(entrega) || 0;
     const montoFinanciar = valorAuto - valorEntrega;
 
-    if (montoFinanciar > 0 && cuotas > 0) {
-      const anioActual = 2026;
-      const antiguedad = anioActual - anioAuto;
-
-      // --- LÓGICA DE TASAS SEGÚN ANTIGÜEDAD (Estilo Prendarios) ---
+    if (montoFinanciar > 0) {
       let tna;
-      if (tipoTasa === "FIJA") {
-        if (antiguedad <= 0) tna = 0.65; // 0KM: 65%
-        else if (antiguedad <= 5) tna = 0.78; // 1 a 5 años: 78%
-        else if (antiguedad <= 10) tna = 0.85; // 6 a 10 años: 85%
-        else tna = 0.95; // +10 años: 95%
+      let cuotasCalculo = cuotas; // Usamos las cuotas del estado por defecto
+
+      // Si es Tasa Cero, forzamos a 12 cuotas y TNA 0
+      if (autoSeleccionado?.etiqueta === "tasa_cero") {
+        tna = 0;
+        cuotasCalculo = 12; // Forzamos el divisor a 12
       } else {
-        // UVA: Tasas bajas pero capital ajustable
-        tna = antiguedad <= 0 ? 0.12 : 0.16;
+        // Lógica normal de tasas
+        const antiguedad = 2026 - anioAuto;
+        if (tipoTasa === "FIJA") {
+          if (antiguedad <= 0) tna = 0.65;
+          else if (antiguedad <= 5) tna = 0.78;
+          else if (antiguedad <= 10) tna = 0.85;
+          else tna = 0.95;
+        } else {
+          tna = antiguedad <= 0 ? 0.12 : 0.16;
+        }
       }
 
       setTasaAplicada(tna * 100);
 
-      // Sistema Francés de Amortización
-      const tasaMensual = tna / 12;
-      const cuota =
-        (montoFinanciar * tasaMensual) /
-        (1 - Math.pow(1 + tasaMensual, -cuotas));
-      setResultado(Math.round(cuota));
+      if (tna === 0) {
+        setResultado(Math.round(montoFinanciar / 12));
+      } else {
+        const tasaMensual = tna / 12;
+        const cuota =
+          (montoFinanciar * tasaMensual) /
+          (1 - Math.pow(1 + tasaMensual, -cuotasCalculo));
+        setResultado(Math.round(cuota));
+      }
     } else {
       setResultado(0);
       setTasaAplicada(0);
     }
-  }, [montoVehiculo, entrega, cuotas, tipoTasa, anioAuto]);
+  }, [montoVehiculo, entrega, cuotas, tipoTasa, anioAuto, autoSeleccionado]);
 
   const handleSelectAuto = (e) => {
     const selectedId = e.target.value;
     if (!selectedId) {
       setMontoVehiculo("");
       setAnioAuto(2026);
+      setAutoSeleccionado(null);
       return;
     }
     const auto = autos.find((a) => a.id === parseInt(selectedId));
     if (auto) {
+      setAutoSeleccionado(auto);
       setMontoVehiculo(auto.precio);
       setAnioAuto(auto.anio);
-      setEntrega(Math.round(auto.precio * 0.35)); // Sugerir 35% de entrega
+      setEntrega(Math.round(auto.precio * 0.35));
+
+      // Si es tasa cero, seteamos el estado de cuotas a 12 automáticamente
+      if (auto.etiqueta === "tasa_cero") {
+        setCuotas(12);
+      }
     }
   };
 
@@ -81,24 +98,25 @@ const CreditSimulator = ({ autos }) => {
           </div>
         </div>
 
-        {/* SELECTOR DE TASA */}
+        {/* SELECTOR DE TASA (Se oculta o bloquea si es Tasa Cero) */}
         <div className={styles.tabs}>
           <button
             className={tipoTasa === "FIJA" ? styles.active : ""}
             onClick={() => setTipoTasa("FIJA")}
+            disabled={autoSeleccionado?.etiqueta === "tasa_cero"}
           >
             Tasa Fija $
           </button>
           <button
             className={tipoTasa === "UVA" ? styles.active : ""}
             onClick={() => setTipoTasa("UVA")}
+            disabled={autoSeleccionado?.etiqueta === "tasa_cero"}
           >
             Créditos UVA
           </button>
         </div>
 
         <div className={styles.mainGrid}>
-          {/* LADO IZQUIERDO: DATOS */}
           <div className={styles.formSide}>
             <div className={styles.inputBox}>
               <label>Elegir del stock:</label>
@@ -109,7 +127,8 @@ const CreditSimulator = ({ autos }) => {
                     .filter((a) => Number(a.precio) > 0)
                     .map((a) => (
                       <option key={a.id} value={a.id}>
-                        {a.nombre} ({a.anio})
+                        {a.nombre} ({a.anio}){" "}
+                        {a.etiqueta === "tasa_cero" ? " 🔥 [TASA 0%]" : ""}
                       </option>
                     ))}
               </select>
@@ -148,7 +167,12 @@ const CreditSimulator = ({ autos }) => {
 
             <div className={styles.inputBox}>
               <label>
-                Plazo: <strong>{cuotas} meses</strong>
+                Plazo:{" "}
+                <strong>
+                  {autoSeleccionado?.etiqueta === "tasa_cero"
+                    ? "12 meses (Fijo)"
+                    : `${cuotas} meses`}
+                </strong>
               </label>
               <input
                 type="range"
@@ -157,7 +181,11 @@ const CreditSimulator = ({ autos }) => {
                 step="12"
                 value={cuotas}
                 onChange={(e) => setCuotas(parseInt(e.target.value))}
+                disabled={autoSeleccionado?.etiqueta === "tasa_cero"} // <-- Bloqueamos el slider
                 className={styles.range}
+                style={{
+                  opacity: autoSeleccionado?.etiqueta === "tasa_cero" ? 0.5 : 1,
+                }}
               />
               <div className={styles.rangeLabels}>
                 <span>12m</span>
@@ -166,18 +194,40 @@ const CreditSimulator = ({ autos }) => {
                 <span>48m</span>
                 <span>60m</span>
               </div>
+              {autoSeleccionado?.etiqueta === "tasa_cero" && (
+                <p
+                  style={{
+                    color: "#ff4b2b",
+                    fontSize: "0.8rem",
+                    marginTop: "5px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  * El beneficio de Tasa 0% aplica únicamente en 12 cuotas
+                  fijas.
+                </p>
+              )}
             </div>
           </div>
 
-          {/* LADO DERECHO: RESULTADOS */}
           <div className={styles.resultSide}>
-            <div
-              className={`${styles.badge} ${
-                anioAuto >= 2026 ? styles.nuevo : styles.usado
-              }`}
-            >
-              {anioAuto >= 2026 ? "Unidad 0KM" : `Usado Año ${anioAuto}`}
-            </div>
+            {/* Si es Tasa Cero, mostramos un badge especial en el resultado */}
+            {autoSeleccionado?.etiqueta === "tasa_cero" ? (
+              <div
+                className={`${styles.badge} ${styles.nuevo}`}
+                style={{ background: "#ff4b2b", color: "#fff" }}
+              >
+                ¡BENEFICIO TASA 0%!
+              </div>
+            ) : (
+              <div
+                className={`${styles.badge} ${
+                  anioAuto >= 2026 ? styles.nuevo : styles.usado
+                }`}
+              >
+                {anioAuto >= 2026 ? "Unidad 0KM" : `Usado Año ${anioAuto}`}
+              </div>
+            )}
 
             <div className={styles.priceContainer}>
               <span className={styles.labelResultado}>
@@ -204,24 +254,37 @@ const CreditSimulator = ({ autos }) => {
               </div>
             </div>
 
-            <div
-              className={
-                tipoTasa === "FIJA" ? styles.infoBoxFija : styles.infoBoxUva
-              }
-            >
-              <Info size={16} />
-              <p>
-                {tipoTasa === "FIJA"
-                  ? "Tasa fija en pesos. Sin sorpresas."
-                  : "Cuota inicial baja ajustable por inflación."}
-              </p>
-            </div>
+            {/* INFO BOX DINÁMICO */}
+            {autoSeleccionado?.etiqueta === "tasa_cero" ? (
+              <div
+                className={styles.infoBoxFija}
+                style={{ backgroundColor: "#e3f2fd", color: "#1565c0" }}
+              >
+                <Percent size={16} />
+                <p>Esta unidad cuenta con financiación especial sin interés.</p>
+              </div>
+            ) : (
+              <div
+                className={
+                  tipoTasa === "FIJA" ? styles.infoBoxFija : styles.infoBoxUva
+                }
+              >
+                <Info size={16} />
+                <p>
+                  {tipoTasa === "FIJA"
+                    ? "Tasa fija en pesos. Sin sorpresas."
+                    : "Cuota inicial baja ajustable por inflación."}
+                </p>
+              </div>
+            )}
 
             <button
               className={styles.cta}
               onClick={() =>
                 window.open(
-                  `https://wa.me/5493408671423?text=Hola! Coticé un auto ${anioAuto} en el simulador, quisiera más información.`,
+                  `https://wa.me/5493408671423?text=Hola! Coticé el ${
+                    autoSeleccionado?.nombre || "auto"
+                  } con Tasa 0%, quisiera más información.`,
                   "_blank"
                 )
               }
