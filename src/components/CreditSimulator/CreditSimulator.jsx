@@ -325,14 +325,23 @@ const CreditSimulator = ({ autos, autoPreseleccionado }) => {
 
             <button
               className={styles.cta}
-              onClick={() =>
+              onClick={() => {
+                // Convertimos la etiqueta a mayúsculas solo si existe, sino ponemos un texto vacío
+                const etiquetaMayus = autoSeleccionado?.etiqueta
+                  ? autoSeleccionado.etiqueta.toUpperCase()
+                  : "";
+
+                const mensaje = `Hola! Coticé el ${
+                  autoSeleccionado?.nombre || "auto"
+                } ${etiquetaMayus}, en ${cuotas} cuotas, quisiera más información.`;
+
                 window.open(
-                  `https://wa.me/5493408671423?text=Hola! Coticé el ${
-                    autoSeleccionado?.nombre || "auto"
-                  } con Tasa 0%, quisiera más información.`,
+                  `https://wa.me/5493408671423?text=${encodeURIComponent(
+                    mensaje
+                  )}`,
                   "_blank"
-                )
-              }
+                );
+              }}
             >
               <Smartphone size={18} /> Consultar por Whatsapp
             </button>

@@ -17,11 +17,10 @@
   background: white;
   width: 95%;
   max-width: 1100px;
-  max-height: 90vh;
+  height: 80vh; /* Cambia max-height por height para fijar el contenedor */
   border-radius: 20px;
   display: flex;
   position: relative;
-  /* El overflow debe ser hidden para que los bordes redondeados corten el contenido */
   overflow: hidden;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
@@ -118,7 +117,11 @@
   padding: 40px;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  /* Importante: permite que el contenido respire */
+  height: 100%; 
+  overflow-y: auto; 
+  /* Suaviza el scroll en navegadores modernos */
+  scrollbar-width: thin; 
 }
 
 .title {
@@ -157,7 +160,7 @@
 .descriptionText {
   color: #666;
   line-height: 1.6;
-  margin-bottom: 30px;
+  margin: 0;
   white-space: pre-line;
 }
 
@@ -262,11 +265,20 @@
 }
 
 .detailsSection {
-  margin: 15px 0;
-  border: 1px solid #eee;
-  border-radius: 8px;
+  margin: 20px 0;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
   background: #f9f9f9;
-  overflow: hidden;
+  width: 100%;
+}
+
+.detailsContent {
+  padding: 20px;
+  background: white;
+  border-top: 1px solid #eee;
+  /* ELIMINA EL MAX-HEIGHT DE 100PX */
+  max-height: none; 
+  overflow: visible; 
 }
 
 .summaryTitle {

@@ -1,6 +1,9 @@
-.reviewsContainer {
-  padding: 60px 20px;
+.reviewsSection {
+  padding: 80px 20px;
   background-color: #ffffff;
+}
+
+.container {
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -10,20 +13,165 @@
   margin-bottom: 40px;
 }
 
+.googleBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8f9fa;
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
 .header h2 {
-  font-size: 2rem;
-  color: #1a1a1a;
+  font-size: 2.2rem;
+  color: #222;
   margin-bottom: 10px;
 }
 
-.header p {
-  color: #666;
-  font-size: 1.1rem;
+.ratingGeneral {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
-/* Ajuste para que el widget no se pegue a los bordes en mobile */
-@media (max-width: 768px) {
-  .reviewsContainer {
-    padding: 40px 15px;
+.score {
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+}
+
+.totalReviews {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* --- CARRUSEL --- */
+.carousel {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 20px 5px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none; /* Oculta scroll en Firefox */
+}
+
+.carousel::-webkit-scrollbar {
+  display: none; /* Oculta scroll en Chrome/Safari */
+}
+
+.card {
+  min-width: 280px; /* Base para móvil */
+  flex: 0 0 calc(25% - 15px); /* 4 tarjetas por fila en escritorio */
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  padding: 20px;
+  scroll-snap-align: start;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.userPhoto {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #eee;
+}
+
+.userInfo {
+  flex: 1;
+}
+
+.userName {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.date {
+  font-size: 0.75rem;
+  color: #888;
+  margin: 0;
+}
+
+.googleIconSmall {
+  width: 16px;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.starsRow {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 12px;
+}
+
+.text {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #444;
+  font-style: italic;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.googleLink {
+  color: #1a73e8;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.googleLink:hover {
+  text-decoration: underline;
+}
+
+/* --- RESPONSIVE --- */
+
+@media (max-width: 1100px) {
+  .card {
+    flex: 0 0 calc(33.333% - 14px); /* 3 tarjetas */
+  }
+}
+
+@media (max-width: 850px) {
+  .card {
+    flex: 0 0 calc(50% - 10px); /* 2 tarjetas */
+  }
+}
+
+@media (max-width: 600px) {
+  .card {
+    flex: 0 0 85%; /* 1 tarjeta y media (para que se note el scroll) */
+  }
+  .header h2 {
+    font-size: 1.7rem;
   }
 }
