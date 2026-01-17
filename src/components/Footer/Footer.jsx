@@ -36,7 +36,7 @@ function Footer() {
         <div className={styles.links}>
           <h3>Soporte</h3>
           <ul>
-            <li><a href="#">Preguntas Frecuentes</a></li>
+            <li><a href="/admin">Admin Section</a></li>
             <li><a href="#">Términos y Condiciones</a></li>
             <li><a href="#">Política de Privacidad</a></li>
           </ul>
