@@ -81,7 +81,7 @@ const AdminBanners = () => {
           ) : (
             <Upload size={20} />
           )}
-          {subiendo ? "Subiendo..." : "Cargar banners"}
+          {subiendo ? "Subiendo..." : "Cargar"}
           <input
             type="file"
             accept="image/*"

@@ -224,6 +224,10 @@ function Admin() {
     navigate("/login");
   };
 
+  const goHome = () => {
+    navigate("/");
+  }
+
   const autosFiltrados = autos.filter((auto) =>
     auto.nombre.toLowerCase().includes(filtroAdmin.toLowerCase())
   );
@@ -237,6 +241,9 @@ function Admin() {
         </div>
         <button onClick={cerrarSesion} className={styles.logoutBtn}>
           Cerrar Sesión
+        </button>
+        <button onClick={goHome} className={styles.homeBtn}>
+          Ir al Inicio
         </button>
       </header>
 
@@ -283,7 +290,7 @@ function Admin() {
               <span className={styles.uploadIcon}>📸</span>
               {selectedFiles.length > 0
                 ? `${selectedFiles.length} seleccionadas`
-                : "Subir fotos de galería"}
+                : "Subir fotos"}
               <input
                 type="file"
                 multiple
