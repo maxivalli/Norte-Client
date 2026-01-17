@@ -18,6 +18,7 @@ const CreditSimulator = ({ autos }) => {
   const [resultado, setResultado] = useState(0);
   const [tasaAplicada, setTasaAplicada] = useState(0);
   const [autoSeleccionado, setAutoSeleccionado] = useState(null); // Nuevo: Guardar el objeto auto
+  const MIN_ENTREGA_PORCENTAJE = 0.3; // 30%
 
   useEffect(() => {
     const valorAuto = parseFloat(montoVehiculo) || 0;
@@ -68,6 +69,7 @@ const CreditSimulator = ({ autos }) => {
       setMontoVehiculo("");
       setAnioAuto(2026);
       setAutoSeleccionado(null);
+      setEntrega(""); // Limpiamos entrega
       return;
     }
     const auto = autos.find((a) => a.id === parseInt(selectedId));
@@ -75,12 +77,28 @@ const CreditSimulator = ({ autos }) => {
       setAutoSeleccionado(auto);
       setMontoVehiculo(auto.precio);
       setAnioAuto(auto.anio);
+
+      // Sugerimos el 35%, que ya es mayor al 30% obligatorio
       setEntrega(Math.round(auto.precio * 0.35));
 
-      // Si es tasa cero, seteamos el estado de cuotas a 12 automáticamente
       if (auto.etiqueta === "tasa_cero") {
         setCuotas(12);
       }
+    }
+  };
+
+  const validarEntrega = () => {
+    const valorAuto = parseFloat(montoVehiculo) || 0;
+    const valorEntrega = parseFloat(entrega) || 0;
+    const minimoRequerido = Math.round(valorAuto * MIN_ENTREGA_PORCENTAJE);
+
+    if (valorEntrega < minimoRequerido && valorAuto > 0) {
+      setEntrega(minimoRequerido);
+      alert(
+        `La entrega mínima permitida es del 30% ($${minimoRequerido.toLocaleString(
+          "es-AR"
+        )})`
+      );
     }
   };
 
@@ -156,13 +174,20 @@ const CreditSimulator = ({ autos }) => {
             </div>
 
             <div className={styles.inputBox}>
-              <label>Tu entrega inicial</label>
+              <label>Tu entrega inicial (Mín. 30%)</label>
               <input
                 type="number"
                 value={entrega}
                 onChange={(e) => setEntrega(e.target.value)}
+                onBlur={validarEntrega} // <--- Se dispara al salir del input
                 placeholder="Monto en pesos"
               />
+              {montoVehiculo > 0 && (
+                <small style={{ color: "#888", fontSize: "0.7rem" }}>
+                  Mínimo requerido: $
+                  {(montoVehiculo * 0.3).toLocaleString("es-AR")}
+                </small>
+              )}
             </div>
 
             <div className={styles.inputBox}>
