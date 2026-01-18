@@ -58,7 +58,6 @@ function Contact() {
 
           <div style={{ marginTop: "20px", color: "#888" }}>
             <p>Lunes a Viernes: 08:00 - 12:00 hs / 16:00 - 20:00 hs</p>
-            <p>Sábados: 8:00 - 12:00 hs</p>
           </div>
         </div>
 

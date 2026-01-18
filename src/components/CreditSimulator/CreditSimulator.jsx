@@ -6,7 +6,8 @@ import {
   Info,
   CheckCircle,
   Smartphone,
-  Percent, // Icono para tasa cero
+  Percent,
+  RotateCcw, // Icono para tasa cero
 } from "lucide-react";
 
 const CreditSimulator = ({ autos, autoPreseleccionado }) => {
@@ -19,6 +20,17 @@ const CreditSimulator = ({ autos, autoPreseleccionado }) => {
   const [tasaAplicada, setTasaAplicada] = useState(0);
   const [autoSeleccionado, setAutoSeleccionado] = useState(null); // Nuevo: Guardar el objeto auto
   const MIN_ENTREGA_PORCENTAJE = 0.3; // 30%
+
+  const limpiarFormulario = () => {
+    setTipoTasa("FIJA");
+    setMontoVehiculo("");
+    setEntrega("");
+    setCuotas(24);
+    setAnioAuto(2026);
+    setResultado(0);
+    setTasaAplicada(0);
+    setAutoSeleccionado(null);
+  };
 
   useEffect(() => {
     if (autoPreseleccionado) {
@@ -109,8 +121,8 @@ const CreditSimulator = ({ autos, autoPreseleccionado }) => {
       setEntrega(minimoRequerido);
       alert(
         `La entrega mínima permitida es del 30% ($${minimoRequerido.toLocaleString(
-          "es-AR"
-        )})`
+          "es-AR",
+        )})`,
       );
     }
   };
@@ -122,14 +134,16 @@ const CreditSimulator = ({ autos, autoPreseleccionado }) => {
     <section id="simulador" className={styles.container}>
       <div className={styles.card}>
         <div className={styles.header}>
-          <Calculator size={30} className={styles.brandIcon} />
-          <div>
-            <h2>Cotizador Prendario</h2>
-            <p>La tasa se ajusta según el año de la unidad</p>
+          <div className={styles.headerTitle}>
+            <Calculator size={30} className={styles.brandIcon} />
+            <div>
+              <h2>Cotizador Prendario</h2>
+              <p>La tasa se ajusta según el año de la unidad</p>
+            </div>
           </div>
         </div>
 
-        {/* SELECTOR DE TASA (Se oculta o bloquea si es Tasa Cero) */}
+        {/* SELECTOR DE TASA */}
         <div className={styles.tabs}>
           <button
             className={tipoTasa === "FIJA" ? styles.active : ""}
@@ -148,15 +162,13 @@ const CreditSimulator = ({ autos, autoPreseleccionado }) => {
         </div>
 
         <div className={styles.mainGrid}>
+          {/* LADO IZQUIERDO: FORMULARIO */}
           <div className={styles.formSide}>
             <div className={styles.inputBox}>
               <label>Elegir del stock:</label>
               <select
                 onChange={handleSelectAuto}
                 className={styles.select}
-                /* VINCULACIÓN: Si hay un autoSeleccionado, el select mostrará su ID.
-       Si no hay nada, mostrará la opción vacía (Ingreso manual).
-    */
                 value={autoSeleccionado ? autoSeleccionado.id : ""}
               >
                 <option value="">Ingreso manual de monto</option>
@@ -199,7 +211,7 @@ const CreditSimulator = ({ autos, autoPreseleccionado }) => {
                 type="number"
                 value={entrega}
                 onChange={(e) => setEntrega(e.target.value)}
-                onBlur={validarEntrega} // <--- Se dispara al salir del input
+                onBlur={validarEntrega}
                 placeholder="Monto en pesos"
               />
               {montoVehiculo > 0 && (
@@ -226,7 +238,7 @@ const CreditSimulator = ({ autos, autoPreseleccionado }) => {
                 step="12"
                 value={cuotas}
                 onChange={(e) => setCuotas(parseInt(e.target.value))}
-                disabled={autoSeleccionado?.etiqueta === "tasa_cero"} // <-- Bloqueamos el slider
+                disabled={autoSeleccionado?.etiqueta === "tasa_cero"}
                 className={styles.range}
                 style={{
                   opacity: autoSeleccionado?.etiqueta === "tasa_cero" ? 0.5 : 1,
@@ -253,10 +265,22 @@ const CreditSimulator = ({ autos, autoPreseleccionado }) => {
                 </p>
               )}
             </div>
+
+            {/* OPCIÓN 2: BOTÓN LIMPIAR AL FINAL DEL FORMULARIO */}
+            <div className={styles.resetContainer}>
+              <button
+                type="button"
+                className={styles.btnReset}
+                onClick={limpiarFormulario}
+              >
+                <RotateCcw size={16} />
+                <span>Limpiar y cotizar otro</span>
+              </button>
+            </div>
           </div>
 
+          {/* LADO DERECHO: RESULTADOS */}
           <div className={styles.resultSide}>
-            {/* Si es Tasa Cero, mostramos un badge especial en el resultado */}
             {autoSeleccionado?.etiqueta === "tasa_cero" ? (
               <div
                 className={`${styles.badge} ${styles.nuevo}`}
@@ -299,7 +323,6 @@ const CreditSimulator = ({ autos, autoPreseleccionado }) => {
               </div>
             </div>
 
-            {/* INFO BOX DINÁMICO */}
             {autoSeleccionado?.etiqueta === "tasa_cero" ? (
               <div
                 className={styles.infoBoxFija}
@@ -326,20 +349,18 @@ const CreditSimulator = ({ autos, autoPreseleccionado }) => {
             <button
               className={styles.cta}
               onClick={() => {
-                // Convertimos la etiqueta a mayúsculas solo si existe, sino ponemos un texto vacío
                 const etiquetaMayus = autoSeleccionado?.etiqueta
                   ? autoSeleccionado.etiqueta.toUpperCase()
                   : "";
-
                 const mensaje = `Hola! Coticé el ${
                   autoSeleccionado?.nombre || "auto"
                 } ${etiquetaMayus}, en ${cuotas} cuotas, quisiera más información.`;
 
                 window.open(
                   `https://wa.me/5493408671423?text=${encodeURIComponent(
-                    mensaje
+                    mensaje,
                   )}`,
-                  "_blank"
+                  "_blank",
                 );
               }}
             >

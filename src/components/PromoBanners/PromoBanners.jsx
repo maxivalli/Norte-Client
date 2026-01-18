@@ -10,7 +10,11 @@ function PromoBanners() {
     fetch('https://norte-production.up.railway.app/api/banners/activos')
       .then(res => res.json())
       .then(data => {
-        setBanners(data);
+        // --- LÓGICA ALEATORIA ---
+        // Mezclamos el array antes de guardarlo en el estado
+        const bannersAleatorios = data.sort(() => Math.random() - 0.5);
+        
+        setBanners(bannersAleatorios);
         setLoading(false);
       })
       .catch(err => {
@@ -29,7 +33,6 @@ function PromoBanners() {
         if (scrollLeft + clientWidth >= scrollWidth - 10) {
           containerRef.current.scrollTo({ left: 0, behavior: 'smooth' });
         } else {
-          // Ajustamos el desplazamiento para que coincida con el ancho de tus cards + gap
           containerRef.current.scrollBy({ left: 320, behavior: 'smooth' });
         }
       }
@@ -44,7 +47,6 @@ function PromoBanners() {
     <section className={styles.promoSection}>
       <div className={styles.container} ref={containerRef}>
         {banners.map((banner) => (
-          /* Envolvemos la imagen con el enlace */
           <div key={banner.id} className={styles.promoCard}>
             <a href="#catalogo" className={styles.cardLink}>
               <img 

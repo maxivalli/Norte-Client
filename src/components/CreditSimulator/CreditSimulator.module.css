@@ -1,98 +1,310 @@
-.container { width: 100%; padding: 10px; box-sizing: border-box; margin-top: 50px; }
-.card {
-  max-width: 1200px; margin: 0 auto; background: white; border-radius: 25px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.07); padding: 30px;
-  box-sizing: border-box; /* Asegura que el padding no estire la card */
+/* 1. ESTRUCTURA PRINCIPAL Y CONTENEDORES */
+.container {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  margin-top: 50px;
 }
-.header { display: flex; gap: 15px; align-items: center; margin-bottom: 25px; }
-.brandIcon { color: #25D366; flex-shrink: 0; } /* Evita que el icono se achique */
-.header h2 { font-size: 1.5rem; margin: 0; color: #1a1a1a; }
-.header p { font-size: 0.9rem; margin: 0; color: #777; }
 
-.tabs { display: flex; gap: 8px; background: #f4f4f4; padding: 5px; border-radius: 12px; margin-bottom: 30px; }
+.card {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 25px;
+  padding: 30px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.07);
+  box-sizing: border-box;
+}
+
+/* 2. ENCABEZADO Y BOTÓN RESET */
+.header {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.headerTitle {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.brandIcon {
+  color: #25d366;
+  flex-shrink: 0;
+}
+
+.header h2 {
+  font-size: 1.5rem;
+  margin: 0;
+  color: #1a1a1a;
+}
+
+.header p {
+  font-size: 0.9rem;
+  margin: 0;
+  color: #777;
+}
+
+.resetContainer {
+  display: flex;
+  justify-content: center; /* Centrado debajo del slider */
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #f0f0f0; /* Una línea sutil divisoria */
+}
+
+.btnReset {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none; /* Quitamos el borde para que parezca un enlace */
+  color: #999; /* Color discreto */
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btnReset:hover {
+  color: #ff4b2b; /* Solo cambia el color al pasar el mouse */
+  background: #fff5f3; /* Un fondo muy suave */
+}
+
+.btnReset svg {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btnReset:hover svg {
+  transform: rotate(-180deg);
+}
+
+/* 3. TABS Y GRID PRINCIPAL */
+.tabs {
+  display: flex;
+  gap: 8px;
+  background: #f4f4f4;
+  padding: 5px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+}
+
 .tabs button {
-  flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold;
-  background: transparent; cursor: pointer; color: #777; transition: 0.3s;
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  background: transparent;
+  cursor: pointer;
+  color: #777;
+  transition: 0.3s;
   font-size: 0.85rem;
 }
-.active { background: white !important; color: #25D366 !important; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
 
-.mainGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-
-.inputBox { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
-.inputBox label { font-size: 0.85rem; font-weight: 700; color: #444; }
-.select, .inputBox input {
-  padding: 13px; border: 1px solid #ddd; border-radius: 10px; font-size: 1rem; background: #fafafa;
-  width: 100%; box-sizing: border-box; /* Previene desbordamiento en mobile */
+.active {
+  background: white !important;
+  color: #25d366 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.rowInputs { display: grid; grid-template-columns: 2fr 1fr; gap: 15px; }
+.mainGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
 
-.range { width: 100%; accent-color: #25D366; margin-top: 5px; }
-.rangeLabels { display: flex; justify-content: space-between; font-size: 0.75rem; color: #bbb; }
+/* 4. FORMULARIO E INPUTS */
+.inputBox {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
 
+.inputBox label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #444;
+}
+
+.select,
+.inputBox input {
+  padding: 13px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 1rem;
+  background: #fafafa;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.rowInputs {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 15px;
+}
+
+.range {
+  width: 100%;
+  accent-color: #25d366;
+  margin-top: 5px;
+}
+
+.rangeLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #bbb;
+}
+
+/* 5. LADO DE RESULTADOS */
 .resultSide {
-  background: #fcfcfc; border-radius: 20px; padding: 25px;
-  display: flex; flex-direction: column; align-items: center; border: 1px solid #f0f0f0;
-  box-sizing: border-box; width: 100%;
+  background: #fcfcfc;
+  border-radius: 20px;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #f0f0f0;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .badge {
-  padding: 5px 14px; border-radius: 20px; font-size: 0.7rem; font-weight: 800;
-  text-transform: uppercase; margin-bottom: 20px;
-}
-.nuevo { background: #e3f2fd; color: #1565c0; }
-.usado { background: #eeeeee; color: #444; }
-
-.priceContainer { text-align: center; margin-bottom: 20px; width: 100%; }
-.labelResultado { font-size: 0.8rem; color: #999; display: block; }
-.priceContainer h3 { 
-    font-size: 2.3rem; margin: 5px 0; color: #ddd; transition: 0.3s; 
-    word-break: break-all; /* Para que números largos no rompan el diseño en mobile */
-}
-.priceActive { color: #1a1a1a !important; }
-
-.dataList { width: 100%; margin-bottom: 20px; border-top: 1px dashed #eee; padding-top: 15px; }
-.dataItem { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #555; margin-bottom: 5px; }
-.dataItem svg { color: #25D366; flex-shrink: 0; }
-
-.infoBoxFija, .infoBoxUva {
-  padding: 12px; border-radius: 10px; font-size: 0.75rem; margin-bottom: 25px; 
-  display: flex; gap: 8px; line-height: 1.3;
-  align-items: flex-start; /* Cambio center por flex-start para mejor alineación */
-  text-align: left;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 20px;
 }
 
-/* Arreglo para los iconos de información */
-.infoBoxFija svg, .infoBoxUva svg {
+.nuevo {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+.usado {
+  background: #eeeeee;
+  color: #444;
+}
+
+.priceContainer {
+  text-align: center;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.labelResultado {
+  font-size: 0.8rem;
+  color: #999;
+  display: block;
+}
+
+.priceContainer h3 {
+  font-size: 2.3rem;
+  margin: 5px 0;
+  color: #ddd;
+  transition: 0.3s;
+  word-break: break-all;
+}
+
+.priceActive {
+  color: #1a1a1a !important;
+}
+
+.dataList {
+  width: 100%;
+  margin-bottom: 20px;
+  border-top: 1px dashed #eee;
+  padding-top: 15px;
+}
+
+.dataItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.dataItem svg {
+  color: #25d366;
   flex-shrink: 0;
-  margin-top: 2px; /* Alineación visual con la primera línea de texto */
 }
 
-.infoBoxFija { background: #e8f5e9; color: #2e7d32; }
-.infoBoxUva { background: #fff3e0; color: #e65100; }
+/* 6. CAJAS DE INFORMACIÓN Y BOTÓN CTA */
+.infoBoxFija,
+.infoBoxUva {
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  margin-bottom: 25px;
+  display: flex;
+  gap: 10px;
+  line-height: 1.4;
+  text-align: left;
+  align-items: center; /* Alineación vertical central para icono y texto corto */
+}
+
+.infoBoxFija svg,
+.infoBoxUva svg {
+  flex-shrink: 0;
+}
+
+.infoBoxFija {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+.infoBoxUva {
+  background: #fff3e0;
+  color: #e65100;
+}
 
 .cta {
-  width: 100%; padding: 16px; background: #25D366; color: white; border: none;
-  border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%;
+  padding: 16px;
+  background: #25d366;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   box-sizing: border-box;
-}
-.cta:hover { background: green; }
-
-.infoBoxFija svg {
-  align-self: center;
+  transition: background 0.3s;
 }
 
-.infoBoxUva svg {
-  align-self: center;
+.cta:hover {
+  background: #1eb954;
 }
 
-/* MEDIA QUERY MEJORADA */
+/* 7. RESPONSIVE */
 @media (max-width: 800px) {
-  .container { margin-top: 20px; padding: 0px; }
-  .mainGrid { grid-template-columns: 1fr; gap: 25px; }
-  .card { padding: 20px; border-radius: 15px; }
-  .header h2 { font-size: 1.3rem; }
-  .priceContainer h3 { font-size: 1.8rem; } /* Achicamos un poco el precio en mobile */
-  .rowInputs { gap: 10px; }
+  .mainGrid {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+
+  .container {
+    margin-top: 20px;
+    padding: 0;
+  }
+
+  .card {
+    padding: 20px;
+    border-radius: 15px;
+  }
+
+  .priceContainer h3 {
+    font-size: 1.8rem;
+  }
 }
