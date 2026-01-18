@@ -307,4 +307,12 @@
   .priceContainer h3 {
     font-size: 1.8rem;
   }
+
+  .btnReset {
+    background: #fff5f3;
+  }
+
+  .btnReset svg {
+    color: #ff4b2b;
+  }
 }
