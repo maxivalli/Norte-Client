@@ -273,6 +273,7 @@
 }
 
 .detailsContent {
+  font-size: 14px;
   padding: 20px;
   background: white;
   border-top: 1px solid #eee;

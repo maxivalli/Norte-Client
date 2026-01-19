@@ -1,121 +1,6 @@
-.catalogSection {
-  padding: 60px 20px;
-  background-color: #f8f9fa;
-  min-height: 100vh;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-/* Barra de búsqueda simplificada */
-.searchBar {
-  margin-bottom: 40px;
-  display: flex;
-  justify-content: center;
-}
-
-.searchBox {
-  position: relative;
-  width: 100%;
-  max-width: 600px;
-}
-
-.searchIcon {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #888;
-}
-
-.searchBox input {
-  width: 100%;
-  padding: 15px 15px 15px 50px;
-  border: 1px solid #ddd;
-  border-radius: 30px;
-  font-size: 1.1rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  outline: none;
-  transition: all 0.3s;
-}
-
-.searchBox input:focus {
-  border-color: #1a73e8;
-  box-shadow: 0 4px 20px rgba(26, 115, 232, 0.15);
-}
-
-/* Grilla de tarjetas */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 30px;
-}
-
-.card {
-  background: white;
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  cursor: pointer;
-  transition: transform 0.3s;
-}
-
-.card:hover {
-  transform: translateY(-8px);
-}
-
-.imageWrapper {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16/10;
-}
-
-.imageWrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.badgeReservado {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: #ff4d4d;
-  color: white;
-  padding: 5px 12px;
-  border-radius: 5px;
-  font-size: 0.8rem;
-  font-weight: bold;
-}
-
-.info {
-  padding: 20px;
-}
-
-.carName {
-  font-size: 1.25rem;
-  margin-bottom: 8px;
-  color: #222;
-}
-
-.price {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: grey;
-  margin-bottom: 12px;
-}
-
-.detailsRow {
-  display: flex;
-  gap: 15px;
-  color: #666;
-  font-size: 0.9rem;
-  border-top: 1px solid #eee;
-  padding-top: 12px;
-}
-
+/* ==========================================================================
+   1. CONTENEDORES GLOBALES
+   ========================================================================== */
 .catalogSection {
   padding: 40px 20px;
   background-color: #f8f9fa;
@@ -127,13 +12,15 @@
   margin: 0 auto;
 }
 
-/* Barra superior con búsqueda y orden */
+/* ==========================================================================
+   2. BARRA SUPERIOR (Búsqueda y Ordenamiento)
+   ========================================================================== */
 .topBar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 20px;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   flex-wrap: wrap;
 }
 
@@ -149,19 +36,26 @@
   top: 50%;
   transform: translateY(-50%);
   color: #888;
+  z-index: 1;
 }
 
 .searchBox input {
   width: 100%;
   padding: 12px 12px 12px 45px;
   border: 1px solid #ddd;
-  border-radius: 12px;
+  border-radius: 30px;
   font-size: 1rem;
   background: white;
   outline: none;
+  transition: all 0.3s;
 }
 
-/* Estilos del Selector */
+.searchBox input:focus {
+  border-color: #ff0000;
+  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.1);
+}
+
+/* Selector de Orden (Select) */
 .sortContainer {
   display: flex;
   align-items: center;
@@ -181,11 +75,12 @@
 }
 
 .selectSort {
-  appearance: none; /* Quita la flecha por defecto del navegador */
+  height: 45px;
+  appearance: none;
   background: white;
   border: 1px solid #ddd;
   padding: 10px 35px 10px 15px;
-  border-radius: 12px;
+  border-radius: 30px;
   font-size: 0.9rem;
   cursor: pointer;
   outline: none;
@@ -200,64 +95,21 @@
   color: #666;
 }
 
-/* Grilla (se mantiene igual que el anterior) */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 25px;
-}
-
-/* Badge general de promoción */
-.promoBadge {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 0.75rem;
-  font-weight: 900;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: white;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  z-index: 10;
-  text-transform: uppercase;
-}
-
-/* Colores específicos */
-.badgeTasa {
-  background: linear-gradient(135deg, #ff4b2b, #ff416c); /* Naranja-Rojo vibrante */
-}
-
-.badgeBonificado {
-  background: linear-gradient(135deg, #1d976c, #93f9b9); /* Degradado verde premium */
-}
-
-.badgeOportunidad {
-  background: linear-gradient(135deg, #f093fb, #f5576c); /* Violeta-Rosa */
-}
-
-/* Ajuste para que el badge de Reservado se mantenga a la derecha o no pise */
-.badgeReservado {
-  position: absolute;
-  top: 10px;
-  right: 10px; /* Movido a la derecha por si hay otra etiqueta */
-  background: linear-gradient(135deg, #000000, #5f5f5f);
-  color: white;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 0.7rem;
-  font-weight: bold;
-}
-
+/* ==========================================================================
+   3. TABS DE FILTRADO (Tipo de Vehículo)
+   ========================================================================== */
 .filterTabs {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 30px;
-  overflow-x: auto; /* Scroll horizontal en móviles */
-  padding-bottom: 5px;
+  margin-bottom: 40px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scrollbar-width: none; /* Oculta scroll en Firefox */
+}
+
+.filterTabs::-webkit-scrollbar {
+  display: none; /* Oculta scroll en Chrome/Safari */
 }
 
 .filterTabs button {
@@ -277,14 +129,111 @@
 
 .filterTabs button:hover {
   background: #f8f9fa;
-  border-color: red;
+  border-color: #ff0000;
 }
 
 .filterTabs button.activeTab {
-  background: red;
+  background: #ff0000;
   color: white;
-  border-color: red;
-  box-shadow: 0 4px 12px rgb(141, 0, 0) (37, 211, 102, 0.3);
+  border-color: #ff0000;
+  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+}
+
+/* ==========================================================================
+   4. GRILLA Y TARJETAS (Cards)
+   ========================================================================== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+.card {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+}
+
+.imageWrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* --- Badges y Etiquetas --- */
+.promoBadge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  z-index: 10;
+  text-transform: uppercase;
+}
+
+.badgeTasa { background: linear-gradient(135deg, #ff4b2b, #ff416c); }
+.badgeBonificado { background: linear-gradient(135deg, #1d976c, #93f9b9); }
+.badgeOportunidad { background: linear-gradient(135deg, #f093fb, #f5576c); }
+
+.badgeReservado {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: linear-gradient(135deg, #000000, #5f5f5f);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  z-index: 11;
+}
+
+/* --- Información de la Card --- */
+.info {
+  padding: 20px;
+}
+
+.carName {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #222;
+}
+
+.price {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #444;
+  margin-bottom: 12px;
+}
+
+.detailsRow {
+  display: flex;
+  gap: 15px;
+  color: #666;
+  font-size: 0.9rem;
+  border-top: 1px solid #eee;
+  padding-top: 12px;
 }
 
 .noResults {
@@ -295,15 +244,9 @@
   font-size: 1.1rem;
 }
 
-@media (max-width: 600px) {
-  .filterTabs {
-    justify-content: flex-start; /* Para que el scroll empiece de la izquierda */
-    padding-bottom: 20px;
-  }
-}
-
-/* ... (resto de estilos de .card, .price, etc. que ya tenías) ... */
-
+/* ==========================================================================
+   5. RESPONSIVE DESIGN
+   ========================================================================== */
 @media (max-width: 768px) {
   .topBar {
     flex-direction: column;
@@ -312,7 +255,7 @@
   }
   
   .sortContainer {
-    justify-content: right;
+    justify-content: flex-end;
   }
 
   .searchBox {
@@ -323,5 +266,14 @@
 @media (max-width: 600px) {
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  .filterTabs {
+    justify-content: flex-start;
+    padding: 0 5px 15px 5px;
+  }
+  
+  .carName {
+    font-size: 1.1rem;
   }
 }
