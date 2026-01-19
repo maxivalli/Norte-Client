@@ -251,12 +251,64 @@
   font-weight: bold;
 }
 
+.filterTabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+  overflow-x: auto; /* Scroll horizontal en móviles */
+  padding-bottom: 5px;
+}
+
+.filterTabs button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 30px;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.filterTabs button:hover {
+  background: #f8f9fa;
+  border-color: #25d366;
+}
+
+.filterTabs button.activeTab {
+  background: #25d366;
+  color: white;
+  border-color: #25d366;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+}
+
+.noResults {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 50px;
+  color: #888;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 600px) {
+  .filterTabs {
+    justify-content: flex-start; /* Para que el scroll empiece de la izquierda */
+    padding-bottom: 20px;
+  }
+}
+
 /* ... (resto de estilos de .card, .price, etc. que ya tenías) ... */
 
 @media (max-width: 768px) {
   .topBar {
     flex-direction: column;
     align-items: stretch;
+    margin-bottom: 20px;
   }
   
   .sortContainer {

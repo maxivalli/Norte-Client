@@ -29,6 +29,81 @@
   transition: transform 0.3s ease;
 }
 
+.promoSection {
+  padding: 40px 0;
+  width: 100%;
+}
+
+.wrapper {
+  position: relative; /* Para posicionar las flechas respecto a este contenedor */
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.container {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 20px 10px;
+  scrollbar-width: none; /* Oculta scrollbar */
+}
+
+.container::-webkit-scrollbar {
+  display: none;
+}
+
+/* ESTILO DE LAS FLECHAS */
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: white;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.navButton:hover {
+  background: red; /* Verde como tu marca */
+  color: white;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.left {
+  left: 10px;
+}
+
+.right {
+  right: 10px;
+}
+
+.promoCard {
+  flex: 0 0 320px;
+  aspect-ratio: 4 / 5;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* OCULTAR FLECHAS EN MÓVIL (opcional) */
+@media (max-width: 768px) {
+  .navButton {
+    display: none; /* En móvil es mejor deslizar con el dedo */
+  }
+}
+
 @media (max-width: 768px) {
   .container {
     margin-left: 20px;

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styles from './PromoBanners.module.css';
+import { ChevronLeft, ChevronRight } from 'lucide-react'; // Importamos flechas
 
 function PromoBanners() {
   const [banners, setBanners] = useState([]);
@@ -10,10 +11,7 @@ function PromoBanners() {
     fetch('https://norte-production.up.railway.app/api/banners/activos')
       .then(res => res.json())
       .then(data => {
-        // --- LÓGICA ALEATORIA ---
-        // Mezclamos el array antes de guardarlo en el estado
         const bannersAleatorios = data.sort(() => Math.random() - 0.5);
-        
         setBanners(bannersAleatorios);
         setLoading(false);
       })
@@ -23,40 +21,56 @@ function PromoBanners() {
       });
   }, []);
 
-  useEffect(() => {
-    if (banners.length === 0) return;
-
-    const interval = setInterval(() => {
-      if (containerRef.current) {
-        const { scrollLeft, scrollWidth, clientWidth } = containerRef.current;
-        
-        if (scrollLeft + clientWidth >= scrollWidth - 10) {
-          containerRef.current.scrollTo({ left: 0, behavior: 'smooth' });
-        } else {
-          containerRef.current.scrollBy({ left: 320, behavior: 'smooth' });
-        }
+  // --- FUNCIONES DE NAVEGACIÓN ---
+  const scroll = (direction) => {
+    if (containerRef.current) {
+      const scrollAmount = 340; // Ajusta según el ancho de tu card + gap
+      if (direction === 'left') {
+        containerRef.current.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+      } else {
+        containerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
       }
-    }, 4000);
-
-    return () => clearInterval(interval);
-  }, [banners]);
+    }
+  };
 
   if (loading || banners.length === 0) return null;
 
   return (
     <section className={styles.promoSection}>
-      <div className={styles.container} ref={containerRef}>
-        {banners.map((banner) => (
-          <div key={banner.id} className={styles.promoCard}>
-            <a href="#catalogo" className={styles.cardLink}>
-              <img 
-                src={banner.imagen_url} 
-                alt={banner.titulo || "Promoción"} 
-                className={styles.bgImage} 
-              />
-            </a>
-          </div>
-        ))}
+      <div className={styles.wrapper}>
+        
+        {/* Flecha Izquierda */}
+        <button 
+          className={`${styles.navButton} ${styles.left}`} 
+          onClick={() => scroll('left')}
+          aria-label="Anterior"
+        >
+          <ChevronLeft size={32} />
+        </button>
+
+        <div className={styles.container} ref={containerRef}>
+          {banners.map((banner) => (
+            <div key={banner.id} className={styles.promoCard}>
+              <a href="#catalogo" className={styles.cardLink}>
+                <img 
+                  src={banner.imagen_url} 
+                  alt={banner.titulo || "Promoción"} 
+                  className={styles.bgImage} 
+                />
+              </a>
+            </div>
+          ))}
+        </div>
+
+        {/* Flecha Derecha */}
+        <button 
+          className={`${styles.navButton} ${styles.right}`} 
+          onClick={() => scroll('right')}
+          aria-label="Siguiente"
+        >
+          <ChevronRight size={32} />
+        </button>
+
       </div>
     </section>
   );

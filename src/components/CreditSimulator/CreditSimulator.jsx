@@ -186,7 +186,7 @@ const CreditSimulator = ({ autos, autoPreseleccionado }) => {
 
             <div className={styles.rowInputs}>
               <div className={styles.inputBox}>
-                <label>Valor Auto</label>
+                <label>Valor vehículo</label>
                 <input
                   type="number"
                   value={montoVehiculo}

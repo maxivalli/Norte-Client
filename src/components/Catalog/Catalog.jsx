@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import styles from "./Catalog.module.css";
 import CarModal from "../CarModal/CarModal.jsx";
 import CreditSimulator from "../CreditSimulator/CreditSimulator.jsx";
-import { Search, ChevronDown, Sparkles, Percent, Gem } from "lucide-react"; // Importamos iconos para las etiquetas
+import { Search, ChevronDown, Sparkles, Percent, Gem, Car, Truck, Bike, LayoutGrid } from "lucide-react";
 
 function Catalog({ autoUrl }) {
   const [autos, setAutos] = useState([]);
   const [busqueda, setBusqueda] = useState("");
   const [orden, setOrden] = useState("recientes");
+  const [tipoFiltro, setTipoFiltro] = useState("Todos"); // <-- NUEVO ESTADO
   const [selectedAuto, setSelectedAuto] = useState(null);
   const [autoParaSimular, setAutoParaSimular] = useState(null);
 
@@ -59,19 +60,26 @@ function Catalog({ autoUrl }) {
     window.history.pushState(null, "", "/");
   };
 
+  // --- LÓGICA DE FILTRADO (Búsqueda + Tipo) Y ORDENAMIENTO ---
   const autosProcesados = autos
-    .filter((auto) =>
-      auto.nombre.toLowerCase().includes(busqueda.toLowerCase())
-    )
+    .filter((auto) => {
+      const coincideBusqueda = auto.nombre.toLowerCase().includes(busqueda.toLowerCase());
+      const coincideTipo = tipoFiltro === "Todos" || auto.tipo === tipoFiltro;
+      return coincideBusqueda && coincideTipo;
+    })
     .sort((a, b) => {
       const precioA = Number(a.precio) || 0;
       const precioB = Number(b.precio) || 0;
+      const anioA = Number(a.anio) || 0;
+      const anioB = Number(b.anio) || 0;
+
       if (orden === "menor-precio") return precioA - precioB;
       if (orden === "mayor-precio") return precioB - precioA;
+      if (orden === "anio-nuevo") return anioB - anioA;
+      if (orden === "anio-viejo") return anioA - anioB;
       return b.id - a.id;
     });
 
-  // --- FUNCIÓN PARA RENDERIZAR LA ETIQUETA ---
   const renderEtiqueta = (auto) => {
     if (auto.reservado)
       return <div className={styles.badgeReservado}>RESERVADO</div>;
@@ -103,6 +111,7 @@ function Catalog({ autoUrl }) {
   return (
     <div className={styles.catalogSection}>
       <div className={styles.container}>
+        {/* BARRA SUPERIOR: BUSQUEDA Y ORDEN */}
         <div className={styles.topBar}>
           <div className={styles.searchBox}>
             <Search size={20} className={styles.searchIcon} />
@@ -126,45 +135,81 @@ function Catalog({ autoUrl }) {
                 <option value="recientes">Más recientes</option>
                 <option value="menor-precio">Menor precio</option>
                 <option value="mayor-precio">Mayor precio</option>
+                <option value="anio-nuevo">Año (Más nuevo)</option>
+                <option value="anio-viejo">Año (Más antiguo)</option>
               </select>
               <ChevronDown size={16} className={styles.arrowIcon} />
             </div>
           </div>
         </div>
 
+        {/* --- NUEVO: SELECTOR DE CATEGORÍAS (TIPO) --- */}
+        <div className={styles.filterTabs}>
+          <button 
+            className={tipoFiltro === "Todos" ? styles.activeTab : ""} 
+            onClick={() => setTipoFiltro("Todos")}
+          >
+            <LayoutGrid size={18} /> Todos
+          </button>
+          <button 
+            className={tipoFiltro === "Automóvil" ? styles.activeTab : ""} 
+            onClick={() => setTipoFiltro("Automóvil")}
+          >
+            <Car size={18} /> Autos
+          </button>
+          <button 
+            className={tipoFiltro === "Camioneta" ? styles.activeTab : ""} 
+            onClick={() => setTipoFiltro("Camioneta")}
+          >
+            <Truck size={18} /> Camionetas
+          </button>
+          <button 
+            className={tipoFiltro === "Motocicleta" ? styles.activeTab : ""} 
+            onClick={() => setTipoFiltro("Motocicleta")}
+          >
+            <Bike size={18} /> Motos
+          </button>
+        </div>
+
+        {/* GRILLA DE AUTOS */}
         <div className={styles.grid}>
-          {autosProcesados.map((auto) => (
-            <div
-              key={auto.id}
-              className={styles.card}
-              onClick={() => handleOpenModal(auto)}
-            >
-              <div className={styles.imageWrapper}>
-                <img
-                  src={auto.imagenes && auto.imagenes[0]}
-                  alt={auto.nombre}
-                />
-                {/* Renderizamos la etiqueta aquí */}
-                {renderEtiqueta(auto)}
-              </div>
-              <div className={styles.info}>
-                <h3 className={styles.carName}>{auto.nombre}</h3>
-                <p className={styles.price}>
-                  {Number(auto.precio) === 0
-                    ? "Consultar"
-                    : `${auto.moneda} ${Number(auto.precio).toLocaleString(
-                        "es-AR"
-                      )}`}
-                </p>
-                <div className={styles.detailsRow}>
-                  <span>{auto.anio}</span>
-                  <span>
-                    {Number(auto.kilometraje).toLocaleString("es-AR")} km
-                  </span>
+          {autosProcesados.length > 0 ? (
+            autosProcesados.map((auto) => (
+              <div
+                key={auto.id}
+                className={styles.card}
+                onClick={() => handleOpenModal(auto)}
+              >
+                <div className={styles.imageWrapper}>
+                  <img
+                    src={auto.imagenes && auto.imagenes[0]}
+                    alt={auto.nombre}
+                  />
+                  {renderEtiqueta(auto)}
+                </div>
+                <div className={styles.info}>
+                  <h3 className={styles.carName}>{auto.nombre}</h3>
+                  <p className={styles.price}>
+                    {Number(auto.precio) === 0
+                      ? "Consultar"
+                      : `${auto.moneda} ${Number(auto.precio).toLocaleString(
+                          "es-AR"
+                        )}`}
+                  </p>
+                  <div className={styles.detailsRow}>
+                    <span>{auto.anio}</span>
+                    <span>
+                      {Number(auto.kilometraje).toLocaleString("es-AR")} km
+                    </span>
+                  </div>
                 </div>
               </div>
+            ))
+          ) : (
+            <div className={styles.noResults}>
+              <p>No se encontraron vehículos en esta categoría.</p>
             </div>
-          ))}
+          )}
         </div>
       </div>
 
@@ -172,7 +217,7 @@ function Catalog({ autoUrl }) {
         <CarModal
           auto={selectedAuto}
           onClose={handleCloseModal}
-          onSimulate={(auto) => setAutoParaSimular(auto)} // Pasamos la función al modal
+          onSimulate={(auto) => setAutoParaSimular(auto)}
         />
       )}
       <CreditSimulator autos={autos} autoPreseleccionado={autoParaSimular} />

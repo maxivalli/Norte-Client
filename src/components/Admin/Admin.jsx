@@ -12,19 +12,27 @@ function Admin() {
   const [previews, setPreviews] = useState([]);
   const [cargando, setCargando] = useState(false);
 
-  // --- CONFIGURACIÓN DE EQUIPAMIENTO ---
+  // --- EQUIPAMIENTO CORREGIDO CON CATEGORÍAS ---
   const equipamientoOpciones = [
-    { id: "aire", label: "Aire acondicionado", emoji: "❄️" },
-    { id: "airbags", label: "Airbags", emoji: "🛡️" },
-    { id: "pantalla", label: "Pantalla multimedia", emoji: "📺" },
-    { id: "traccion", label: "Control de tracción", emoji: "🏎️" },
-    { id: "cuero", label: "Asientos de cuero", emoji: "💺" },
-    { id: "luces", label: "Luces antinieblas", emoji: "💡" },
-    { id: "bluetooth", label: "Bluetooth", emoji: "🛜" },
-    { id: "crucero", label: "Control crucero", emoji: "🛣️" },
-    { id: "camara", label: "Cámara de retroceso", emoji: "📷" },
-    { id: "clima", label: "Climatizador", emoji: "🌡️" },
-    { id: "abs", label: "ABS", emoji: "🛑" },
+    { id: "airbags", label: "Airbags", emoji: "🛡️", categoria: "Seguridad" },
+    { id: "abs", label: "ABS", emoji: "🛑", categoria: "Seguridad" },
+    { id: "traccion", label: "Control de tracción", emoji: "🏎️", categoria: "Seguridad" },
+    { id: "estabilidad", label: "Cont. de est. (ESP)", emoji: "⚖️", categoria: "Seguridad" },
+    { id: "isofix", label: "Anclajes ISOFIX", emoji: "👶", categoria: "Seguridad" },
+    { id: "presion", label: "Sensor de presión", emoji: "🎡", categoria: "Seguridad" },
+    { id: "aire", label: "Aire acondicionado", emoji: "❄️", categoria: "Confort" },
+    { id: "clima", label: "Climatizador", emoji: "🌡️", categoria: "Confort" },
+    { id: "crucero", label: "Control crucero", emoji: "🛣️", categoria: "Confort" },
+    { id: "cuero", label: "Asientos de cuero", emoji: "💺", categoria: "Confort" },
+    { id: "techo", label: "Techo solar", emoji: "☀️", categoria: "Confort" },
+    { id: "pantalla", label: "Pantalla multimedia", emoji: "📺", categoria: "Tecnología" },
+    { id: "apple_android", label: "CarPlay / A. Auto", emoji: "📱", categoria: "Tecnología" },
+    { id: "bluetooth", label: "Bluetooth", emoji: "🛜", categoria: "Tecnología" },
+    { id: "camara", label: "Cámara de retroceso", emoji: "📷", categoria: "Tecnología" },
+    { id: "sensores", label: "Sen. de estac.", emoji: "🚥", categoria: "Tecnología" },
+    { id: "luces", label: "Luces antinieblas", emoji: "💡", categoria: "Exterior" },
+    { id: "4x4", label: "Tracción 4x4", emoji: "⛰️", categoria: "Exterior" },
+    { id: "aleacion", label: "Llantas de aleación", emoji: "🛞", categoria: "Exterior" }
   ];
 
   const [equipamientoSeleccionado, setEquipamientoSeleccionado] = useState({});
@@ -47,12 +55,12 @@ function Admin() {
     descripcion: "", 
     color: "",
     reservado: false,
-    etiqueta: "" // <-- NUEVA PROPIEDAD
+    etiqueta: "",
+    tipo: "Automóvil"
   };
 
   const [formData, setFormData] = useState(initialForm);
 
-  // --- CARGA INICIAL ---
   useEffect(() => {
     const auth = localStorage.getItem("adminAuth");
     if (auth !== "true") {
@@ -72,7 +80,6 @@ function Admin() {
     }
   };
 
-  // --- MANEJO DE FORMULARIO ---
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -103,7 +110,6 @@ function Admin() {
     setPreviews(newPreviews);
   };
 
-  // --- CLOUDINARY ---
   const uploadImagesToCloudinary = async (files) => {
     const uploadedUrls = [];
     const uploadPreset = "norte_autos";
@@ -116,10 +122,7 @@ function Admin() {
       try {
         const res = await fetch(
           `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-          {
-            method: "POST",
-            body: data,
-          }
+          { method: "POST", body: data }
         );
         const resData = await res.json();
         if (resData.secure_url) uploadedUrls.push(resData.secure_url);
@@ -130,12 +133,12 @@ function Admin() {
     return uploadedUrls;
   };
 
-  // --- SUBMIT ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     setCargando(true);
 
     try {
+      // Generar la descripción basada en los checks activos
       const descripcionConEmojis = equipamientoOpciones
         .filter((op) => equipamientoSeleccionado[op.id])
         .map((op) => `${op.emoji} ${op.label}`)
@@ -168,9 +171,7 @@ function Admin() {
       );
 
       if (res.ok) {
-        alert(
-          editandoId ? "✅ Actualizado correctamente" : "🚀 Publicado con éxito"
-        );
+        alert(editandoId ? "✅ Actualizado correctamente" : "🚀 Publicado con éxito");
         limpiarFormulario();
         cargarAutos();
       }
@@ -191,15 +192,16 @@ function Admin() {
 
   const prepararEdicion = (auto) => {
     setEditandoId(auto.id);
-    // Aseguramos que la etiqueta se cargue si existe, o quede vacía
     setFormData({ 
       ...auto, 
       imagenes: auto.imagenes || [],
-      etiqueta: auto.etiqueta || "" 
+      etiqueta: auto.etiqueta || "",
+      tipo: auto.tipo || "Automóvil"
     });
 
     const nuevosChecks = {};
     equipamientoOpciones.forEach((op) => {
+      // Verificamos si la descripción del auto guardado contiene el nombre del equipamiento
       if (auto.descripcion?.includes(op.label)) {
         nuevosChecks[op.id] = true;
       }
@@ -224,9 +226,7 @@ function Admin() {
     navigate("/login");
   };
 
-  const goHome = () => {
-    navigate("/");
-  }
+  const goHome = () => navigate("/");
 
   const autosFiltrados = autos.filter((auto) =>
     auto.nombre.toLowerCase().includes(filtroAdmin.toLowerCase())
@@ -239,16 +239,33 @@ function Admin() {
           <h1>{editandoId ? "📝 Editando Auto" : "🚗 Panel de Carga"}</h1>
           <p>Norte Automotores</p>
         </div>
-        <button onClick={cerrarSesion} className={styles.logoutBtn}>
-          Cerrar Sesión
-        </button>
-        <button onClick={goHome} className={styles.homeBtn}>
-          Ir al Inicio
-        </button>
+        <div className={styles.headerButtons}>
+          <button onClick={goHome} className={styles.homeBtn}>Ir al Inicio</button>
+          <button onClick={cerrarSesion} className={styles.logoutBtn}>Cerrar Sesión</button>
+        </div>
       </header>
 
       <section className={styles.formSection}>
         <form onSubmit={handleSubmit} className={styles.form}>
+          
+          <div className={styles.formGroup}>
+            <label>Tipo de Vehículo:</label>
+            <div className={styles.tipoVehiculoGrid}>
+              {["Automóvil", "Camioneta", "Motocicleta"].map((t) => (
+                <label key={t} className={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="tipo"
+                    value={t}
+                    checked={formData.tipo === t}
+                    onChange={handleChange}
+                  />
+                  <span>{t === "Automóvil" ? "🚗" : t === "Camioneta" ? "🛻" : "🏍️"} {t}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
           <div className={styles.formGroup}>
             <label>Marca y Modelo:</label>
             <input
@@ -263,11 +280,7 @@ function Admin() {
           <div className={styles.row}>
             <div className={styles.formGroup}>
               <label>Moneda:</label>
-              <select
-                name="moneda"
-                onChange={handleChange}
-                value={formData.moneda}
-              >
+              <select name="moneda" onChange={handleChange} value={formData.moneda}>
                 <option value="$">$ Pesos</option>
                 <option value="U$S">U$S Dólares</option>
               </select>
@@ -288,9 +301,7 @@ function Admin() {
             <label>Imágenes:</label>
             <label className={styles.fileLabel}>
               <span className={styles.uploadIcon}>📸</span>
-              {selectedFiles.length > 0
-                ? `${selectedFiles.length} seleccionadas`
-                : "Subir fotos"}
+              {selectedFiles.length > 0 ? `${selectedFiles.length} seleccionadas` : "Subir fotos"}
               <input
                 type="file"
                 multiple
@@ -304,13 +315,7 @@ function Admin() {
                 {previews.map((url, index) => (
                   <div key={index} className={styles.previewItem}>
                     <img src={url} alt="Previa" />
-                    <button
-                      type="button"
-                      onClick={() => removeSelectedFile(index)}
-                      className={styles.removePreview}
-                    >
-                      ✕
-                    </button>
+                    <button type="button" onClick={() => removeSelectedFile(index)} className={styles.removePreview}>✕</button>
                   </div>
                 ))}
               </div>
@@ -320,42 +325,22 @@ function Admin() {
           <div className={styles.row}>
             <div className={styles.formGroup}>
               <label>Color:</label>
-              <input
-                name="color"
-                placeholder="Ej: Blanco"
-                onChange={handleChange}
-                value={formData.color}
-              />
+              <input name="color" placeholder="Ej: Blanco" onChange={handleChange} value={formData.color} />
             </div>
             <div className={styles.formGroup}>
               <label>Año:</label>
-              <input
-                name="anio"
-                placeholder="Ej: 2020"
-                type="number"
-                onChange={handleChange}
-                value={formData.anio}
-              />
+              <input name="anio" placeholder="Ej: 2020" type="number" onChange={handleChange} value={formData.anio} />
             </div>
           </div>
 
           <div className={styles.row}>
             <div className={styles.formGroup}>
               <label>Motor:</label>
-              <input
-                name="motor"
-                placeholder="Ej: 1.6 Turbo"
-                onChange={handleChange}
-                value={formData.motor}
-              />
+              <input name="motor" placeholder="Ej: 1.6 Turbo" onChange={handleChange} value={formData.motor} />
             </div>
             <div className={styles.formGroup}>
               <label>Transmisión:</label>
-              <select
-                name="transmision"
-                onChange={handleChange}
-                value={formData.transmision}
-              >
+              <select name="transmision" onChange={handleChange} value={formData.transmision}>
                 <option value="Manual">Manual</option>
                 <option value="Automática">Automática</option>
               </select>
@@ -365,11 +350,7 @@ function Admin() {
           <div className={styles.row}>
             <div className={styles.formGroup}>
               <label>Combustible:</label>
-              <select
-                name="combustible"
-                onChange={handleChange}
-                value={formData.combustible}
-              >
+              <select name="combustible" onChange={handleChange} value={formData.combustible}>
                 <option value="Nafta">Nafta</option>
                 <option value="Diesel">Diesel</option>
                 <option value="Híbrido">Híbrido</option>
@@ -378,17 +359,10 @@ function Admin() {
             </div>
             <div className={styles.formGroup}>
               <label>Kilometraje:</label>
-              <input
-                name="kilometraje"
-                placeholder="Ej: 75000"
-                type="number"
-                onChange={handleChange}
-                value={formData.kilometraje}
-              />
+              <input name="kilometraje" placeholder="Ej: 75000" type="number" onChange={handleChange} value={formData.kilometraje} />
             </div>
           </div>
 
-          {/* --- NUEVA SECCIÓN DE ETIQUETA --- */}
           <div className={styles.formGroup}>
             <label>Promoción Especial / Etiqueta:</label>
             <select
@@ -409,56 +383,52 @@ function Admin() {
             </select>
           </div>
 
-          {/* SECCIÓN DE EQUIPAMIENTO */}
+          {/* SECCIÓN DE EQUIPAMIENTO AGRUPADO */}
           <div className={styles.formGroup}>
-            <label>Equipamiento destacado:</label>
-            <div className={styles.equipamientoGrid}>
-              {equipamientoOpciones.map((op) => (
-                <label key={op.id} className={styles.equipamientoItem}>
-                  <input
-                    type="checkbox"
-                    name={op.id}
-                    checked={!!equipamientoSeleccionado[op.id]}
-                    onChange={handleEquipamientoChange}
-                  />
-                  <span>
-                    {op.emoji} {op.label}
-                  </span>
-                </label>
+            <label className={styles.mainLabel}>Equipamiento destacado:</label>
+            <div className={styles.equipamientoContainer}>
+              {["Seguridad", "Confort", "Tecnología", "Exterior"].map((cat) => (
+                <div key={cat} className={styles.categoriaBlock}>
+                  <h4 className={styles.categoriaTitulo}>
+                    {cat === "Seguridad" && "🛡️ "}
+                    {cat === "Confort" && "🌡️ "}
+                    {cat === "Tecnología" && "📱 "}
+                    {cat === "Exterior" && "🚘 "}
+                    {cat}
+                  </h4>
+                  <div className={styles.equipamientoGrid}>
+                    {equipamientoOpciones
+                      .filter((op) => op.categoria === cat)
+                      .map((op) => (
+                        <label key={op.id} className={styles.equipamientoItem}>
+                          <input
+                            type="checkbox"
+                            name={op.id}
+                            checked={!!equipamientoSeleccionado[op.id]}
+                            onChange={handleEquipamientoChange}
+                          />
+                          <span className={styles.checkboxCustom}>
+                            {op.emoji} {op.label}
+                          </span>
+                        </label>
+                      ))}
+                  </div>
+                </div>
               ))}
             </div>
           </div>
 
           <label className={styles.checkboxLabel}>
-            <input
-              type="checkbox"
-              name="reservado"
-              onChange={handleChange}
-              checked={formData.reservado}
-            />
+            <input type="checkbox" name="reservado" onChange={handleChange} checked={formData.reservado} />
             Marcar como RESERVADO
           </label>
 
           <div className={styles.buttonGroup}>
-            <button
-              type="submit"
-              className={styles.submitBtn}
-              disabled={cargando}
-            >
-              {cargando
-                ? "⏳ Subiendo..."
-                : editandoId
-                ? "💾 Guardar Cambios"
-                : "🚀 Publicar"}
+            <button type="submit" className={styles.submitBtn} disabled={cargando}>
+              {cargando ? "⏳ Subiendo..." : editandoId ? "💾 Guardar Cambios" : "🚀 Publicar"}
             </button>
             {editandoId && (
-              <button
-                type="button"
-                onClick={limpiarFormulario}
-                className={styles.cancelBtn}
-              >
-                Cancelar
-              </button>
+              <button type="button" onClick={limpiarFormulario} className={styles.cancelBtn}>Cancelar</button>
             )}
           </div>
         </form>
@@ -480,22 +450,12 @@ function Admin() {
               <div className={styles.itemInfo}>
                 <span className={styles.itemName}>{auto.nombre}</span>
                 <span className={styles.itemDetails}>
-                  Visitas: {auto.visitas || 0} | {auto.etiqueta ? `🏷️ ${auto.etiqueta}` : 'Normal'}
+                   {auto.tipo ? `[${auto.tipo}] ` : ''} Visitas: {auto.visitas || 0} | {auto.etiqueta ? `🏷️ ${auto.etiqueta}` : 'Normal'}
                 </span>
               </div>
               <div className={styles.acciones}>
-                <button
-                  onClick={() => prepararEdicion(auto)}
-                  className={styles.editBtn}
-                >
-                  Editar
-                </button>
-                <button
-                  onClick={() => handleDelete(auto.id)}
-                  className={styles.deleteBtn}
-                >
-                  Borrar
-                </button>
+                <button onClick={() => prepararEdicion(auto)} className={styles.editBtn}>Editar</button>
+                <button onClick={() => handleDelete(auto.id)} className={styles.deleteBtn}>Borrar</button>
               </div>
             </div>
           ))}

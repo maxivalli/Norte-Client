@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styles from "./GoogleReviews.module.css";
 import { Star } from "lucide-react";
 
@@ -6,9 +6,8 @@ const resenas = [
   {
     id: 1,
     nombre: "Walter Pistarini",
-    foto: "https://lh3.googleusercontent.com/a-/ALV-UjX9GEUH014U1AtVzVFxZkBgIQYI18xZwYbgRWs0loG9IUzG5y4=w144-h144-p-rp-mo-ba3-br100", // Reemplazar con fotos reales
-    texto:
-      "Atención y unidades excelentes!!! Me recorrí 400 km para comprar una chata, la verdad q valió la pena, los recomiendo!",
+    foto: "https://lh3.googleusercontent.com/a-/ALV-UjX9GEUH014U1AtVzVFxZkBgIQYI18xZwYbgRWs0loG9IUzG5y4=w144-h144-p-rp-mo-ba3-br100", 
+    texto: "Atención y unidades excelentes!!! Me recorrí 400 km para comprar una chata, la verdad q valió la pena, los recomiendo!",
     estrellas: 5,
     hace: "Hace 2 meses",
   },
@@ -16,8 +15,7 @@ const resenas = [
     id: 2,
     nombre: "Juan Cruz Ronchi",
     foto: "https://lh3.googleusercontent.com/a-/ALV-UjVCUajLywa4J895nFYCR_VtwIfjkwwwXTvw79J6768P1KlUSkdR=w72-h72-p-rp-mo-br100",
-    texto:
-      "Excelente atención. No recuerdo cuantos autos le compre. Pero son más de 6.",
+    texto: "Excelente atención. No recuerdo cuantos autos le compre. Pero son más de 6.",
     estrellas: 5,
     hace: "Hace 1 mes",
   },
@@ -56,14 +54,55 @@ const resenas = [
 ];
 
 const GoogleReviews = () => {
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    const contenedor = scrollRef.current;
+    let interval;
+
+    const startAutoScroll = () => {
+      interval = setInterval(() => {
+        if (contenedor) {
+          const { scrollLeft, scrollWidth, clientWidth } = contenedor;
+          // Si llega al final (con margen de 10px), vuelve al inicio
+          if (scrollLeft + clientWidth >= scrollWidth - 10) {
+            contenedor.scrollTo({ left: 0, behavior: "smooth" });
+          } else {
+            // Desplaza el ancho de una card aproximadamente
+            contenedor.scrollBy({ left: 340, behavior: "smooth" });
+          }
+        }
+      }, 1000);
+    };
+
+    startAutoScroll();
+
+    // Pausar al pasar el mouse
+    const handleMouseEnter = () => clearInterval(interval);
+    const handleMouseLeave = () => startAutoScroll();
+
+    if (contenedor) {
+      contenedor.addEventListener("mouseenter", handleMouseEnter);
+      contenedor.addEventListener("mouseleave", handleMouseLeave);
+    }
+
+    return () => {
+      clearInterval(interval);
+      if (contenedor) {
+        contenedor.removeEventListener("mouseenter", handleMouseEnter);
+        contenedor.removeEventListener("mouseleave", handleMouseLeave);
+      }
+    };
+  }, []);
+
   return (
     <section className={styles.reviewsSection} id="resenas">
       <div className={styles.container}>
         <div className={styles.header}>
           <div className={styles.googleBadge}>
             <img
-              width="48"
-              height="48"
+              width="40"
+              height="40"
               src="https://img.icons8.com/color/48/google-logo.png"
               alt="google-logo"
             />
@@ -81,7 +120,8 @@ const GoogleReviews = () => {
           </div>
         </div>
 
-        <div className={styles.carousel}>
+        {/* --- CONEXIÓN DE LA REF AQUÍ --- */}
+        <div className={styles.carousel} ref={scrollRef}>
           {resenas.map((resena) => (
             <div key={resena.id} className={styles.card}>
               <div className={styles.cardHeader}>
@@ -95,8 +135,8 @@ const GoogleReviews = () => {
                   <p className={styles.date}>{resena.hace}</p>
                 </div>
                 <img
-                  width="48"
-                  height="48"
+                  width="20"
+                  height="20"
                   src="https://img.icons8.com/color/48/google-logo.png"
                   alt="google-logo"
                 />
@@ -113,7 +153,7 @@ const GoogleReviews = () => {
 
         <div className={styles.footer}>
           <a
-            href="https://maps.app.goo.gl/wMLJQheaezWAMtUbA"
+            href="https://www.google.com/maps" 
             target="_blank"
             rel="noopener noreferrer"
             className={styles.googleLink}
@@ -127,3 +167,10 @@ const GoogleReviews = () => {
 };
 
 export default GoogleReviews;
+
+
+
+
+
+
+

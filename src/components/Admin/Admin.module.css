@@ -1,170 +1,387 @@
+/* ==========================================================================
+   1. CONTENEDOR PRINCIPAL Y HEADER
+   ========================================================================== */
 .adminContainer {
-  max-width: 800px;
+  max-width: 850px;
   margin: 40px auto;
   padding: 30px;
   background-color: #fcfcfc;
   border-radius: 20px;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   position: relative;
 }
 
-.adminHeader { text-align: center; margin-bottom: 40px; }
-.adminHeader h1 { font-size: 1.8rem; color: #1a1a1a; }
-
-.logoutBtn {
-  position: absolute; top: 20px; right: 20px;
-  background-color: #ff5252; color: white;
-  border: none; padding: 8px 15px; border-radius: 8px;
-  cursor: pointer; font-weight: 600;
+.adminHeader {
+  text-align: center;
+  margin-bottom: 40px;
 }
 
-.homeBtn {
-  position: absolute; top: 20px; left: 20px;
-  background-color: #2563eb; color: white;
-  border: none; padding: 8px 15px; border-radius: 8px;
-  cursor: pointer; font-weight: 600;
+.adminHeader h1 {
+  font-size: 1.8rem;
+  color: #1a1a1a;
+  margin-bottom: 10px;
 }
 
-.formSection { background: white; padding: 20px; border-radius: 12px; border: 1px solid #eee; }
-.form { display: flex; flex-direction: column; gap: 5px; }
-.row { display: flex; gap: 15px; width: 100%; }
-
-.formGroup { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; flex: 1; }
-.formGroup label { font-size: 0.85rem; font-weight: 700; color: #444; }
-.formGroup ::placeholder {
-  font-size: 12px;
-}
-
-.form input, .form select, .form textarea, .searchAdminInput {
-  width: 100%; padding: 12px; border: 1px solid #ddd;
-  border-radius: 8px; font-size: 1rem; outline: none; background: white;
-}
-
-.form select {
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-  background-repeat: no-repeat; background-position: right 10px center; background-size: 1em;
-}
-
-/* CARGA DE FOTOS */
-.hiddenFileInput { display: none; }
-.fileLabel {
-  display: flex; flex-direction: column; align-items: center;
-  padding: 20px; background: #f8f9fa; border: 2px dashed #ccc;
-  border-radius: 10px; cursor: pointer; color: #555;
-}
-
-.previewContainer {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  gap: 10px; margin-top: 12px; background: #f0f0f0; padding: 10px; border-radius: 8px;
-}
-
-.previewItem { position: relative; aspect-ratio: 1; border-radius: 6px; overflow: hidden; border: 2px solid white; }
-.previewItem img { width: 100%; height: 100%; object-fit: cover; }
-
-.removePreview {
-  position: absolute; top: 2px; right: 2px; background: rgba(255, 0, 0, 0.8);
-  color: white; border: none; border-radius: 50%; width: 20px; height: 20px;
-  font-size: 12px; cursor: pointer;
-}
-
-/* BOTONES */
-.buttonGroup { display: flex; gap: 12px; margin-top: 20px; }
-.submitBtn { flex: 2; background: #28a745; color: white; padding: 14px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
-.cancelBtn { flex: 1; background: #6c757d; color: white; border: none; padding: 14px; border-radius: 10px; cursor: pointer; }
-.submitBtn:disabled { background: #ccc; cursor: wait; }
-
-/* Contenedor de la opción Reservado */
-.checkboxLabel {
+.headerButtons {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 15px;
-  background: #f8f9fa; /* Gris muy suave, no rojo */
-  border: 1px solid #e9ecef;
-  border-radius: 10px;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.logoutBtn, .homeBtn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
-  margin: 15px 0;
-  transition: all 0.2s ease;
-  user-select: none; /* Evita que se seleccione el texto al hacer click rápido */
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: opacity 0.2s;
 }
 
-.checkboxLabel:hover {
-  background: #e9ecef;
-  border-color: #dee2e6;
+.logoutBtn { background-color: #ff5252; color: white; }
+.homeBtn { background-color: #2563eb; color: white; }
+
+/* ==========================================================================
+   2. FORMULARIO - ESTRUCTURA GENERAL
+   ========================================================================== */
+.formSection {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid #eee;
 }
 
-/* Estilo del cuadradito (checkbox) */
-.checkboxLabel input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  accent-color: #28a745; /* El color del check cuando se marca será verde */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-/* El texto dentro del label */
-.checkboxLabel span {
-  font-size: 0.95rem;
-  font-weight: 500;
+.row {
+  display: flex;
+  gap: 15px;
+  width: 100%;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.formGroup label {
+  font-size: 0.9rem;
+  font-weight: 700;
   color: #333;
 }
 
-/* Variante si quieres resaltar que está seleccionado (Opcional) */
-.checkboxLabel:has(input:checked) {
-  background: #e8f5e9; /* Verde muy clarito solo cuando está marcado */
-  border-color: #c8e6c9;
+.form input, .form select, .form textarea, .searchAdminInput {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  background: white;
+  transition: border-color 0.2s;
 }
 
-/* LISTADO */
-.divider { margin: 40px 0; border: 0; border-top: 2px dashed #eee; }
-.listHeader { margin-bottom: 20px; }
-.searchAdminInput { margin-top: 10px; border: 2px solid #eee; border-radius: 30px; padding: 10px 20px; }
+.form input:focus { border-color: #25d366; }
 
-.itemBorrar {
-  display: flex; justify-content: space-between; align-items: center; padding: 15px;
-  background: white; border: 1px solid #eee; border-radius: 12px; margin-bottom: 10px;
+/* ==========================================================================
+   3. SELECTORES DE TIPO (Radio Buttons)
+   ========================================================================== */
+.tipoVehiculoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 12px;
 }
-.itemName { font-weight: 700; color: #222; }
-.itemDetails { font-size: 0.85rem; color: #666; margin-left: 10px;}
-.acciones { display: flex; gap: 8px; }
 
-.editBtn { background: #fff3e0; color: #e65100; border: 1px solid #ffe0b2; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
-.deleteBtn { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
+.radioLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px;
+  background: white;
+  border: 2px solid #eee;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.radioLabel input { margin-bottom: 5px; accent-color: #25d366; }
+
+.radioLabel:has(input:checked) {
+  border-color: #25d366;
+  background-color: #f0fff4;
+  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.15);
+}
+
+/* ==========================================================================
+   4. EQUIPAMIENTO POR CATEGORÍAS
+   ========================================================================== */
+.equipamientoContainer {
+  background: #f9f9f9;
+  border: 1px solid #eee;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.categoriaBlock { margin-bottom: 25px; }
+
+.categoriaTitulo {
+  font-size: 0.95rem;
+  color: #222;
+  margin-bottom: 15px;
+  display: inline-block;
+  padding-bottom: 3px;
+}
 
 .equipamientoGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  gap: 12px;
-  background: #fdfdfd;
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  margin-top: 5px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
 }
 
 .equipamientoItem {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
+  gap: 10px;
+  background: white;
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 8px;
   cursor: pointer;
+  font-size: 0.85rem;
+  transition: 0.2s;
+}
+
+.equipamientoItem:hover {
+  background: #f0fff4;
+  border-color: #25d366;
+}
+
+.equipamientoItem input {
+  accent-color: #25d366;
+  width: 18px;
+  height: 18px;
+}
+
+/* ==========================================================================
+   5. CARGA DE IMÁGENES (Selector y Previsualización)
+   ========================================================================== */
+.fileLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 30px 20px;
+  background: #fdfdfd;
+  border: 2px dashed #25D366;
+  border-radius: 15px;
+  cursor: pointer;
+  color: #25D366;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.fileLabel:hover {
+  background: #f0fff4;
+  border-color: #1eb954;
+}
+
+.uploadIcon { font-size: 2rem; }
+.hiddenFileInput { display: none; }
+
+.previewContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 12px;
+  margin-top: 15px;
+  background: #f1f3f5;
+  padding: 15px;
+  border-radius: 12px;
+  min-height: 100px;
+}
+
+.previewItem {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border: 2px solid white;
+}
+
+.previewItem img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.removePreview {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: rgba(255, 0, 0, 0.9);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+/* ==========================================================================
+   6. CHECKBOX RESERVADO Y BOTONES DE ACCIÓN
+   ========================================================================== */
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 18px 25px;
+  background: #ffffff;
+  border: 2px solid #eee;
+  border-radius: 12px;
+  cursor: pointer;
+  margin: 25px 0;
+  transition: all 0.3s ease;
+  user-select: none;
+  font-weight: 700;
   color: #444;
 }
 
-.equipamientoItem input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
+.checkboxLabel:hover { border-color: #25d366; background: #f9f9f9; }
+
+.checkboxLabel:has(input:checked) {
+  background: #fff5f5;
+  border-color: #ff5252;
+  color: #c62828;
+}
+
+.checkboxLabel input[type="checkbox"] {
+  width: 24px;
+  height: 24px;
+  accent-color: #ff5252;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.submitBtn {
+  flex: 2;
+  background: #25d366;
+  color: white;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.cancelBtn {
+  flex: 1;
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 10px;
   cursor: pointer;
 }
 
-@media (max-width: 650px) {
-  .row, .buttonGroup { flex-direction: column; }
-  .adminHeader { margin-top: 60px; }
+/* ==========================================================================
+   7. LISTADO DE INVENTARIO
+   ========================================================================== */
+.listSection { margin-top: 40px; }
+
+.listHeader input {
+  margin-bottom: 20px;
+}
+
+.itemBorrar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.itemName { font-weight: 700; color: #1a1a1a; display: block; }
+.itemDetails { font-size: 0.8rem; color: #777; }
+.acciones { display: flex; gap: 8px; }
+
+.editBtn {
+  background: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.deleteBtn {
+  background: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   8. RESPONSIVE DESIGN (MEDIA QUERIES)
+   ========================================================================== */
+
+/* Tablets y Móviles grandes (max 768px) */
+@media (max-width: 768px) {
+  .adminContainer { margin: 10px; padding: 15px; }
+  .row { flex-direction: column; gap: 10px; }
+  
+  .tipoVehiculoGrid { grid-template-columns: 1fr; }
+  .radioLabel { flex-direction: row; justify-content: flex-start; gap: 15px; padding: 15px; }
+  
+  .equipamientoGrid { grid-template-columns: 1fr 1fr; }
+  
   .itemBorrar { flex-direction: column; align-items: flex-start; gap: 15px; }
   .acciones { width: 100%; }
-  .acciones button { flex: 1; }
-  .checkboxLabel {
-    font-size: 12px;
-  }
+  .acciones button { flex: 1; padding: 12px; }
+
+  .headerButtons { position: static; width: 100%; margin-bottom: 20px; }
+  .checkboxLabel { padding: 15px; font-size: 0.9rem; }
+}
+
+/* Móviles pequeños (max 480px) */
+@media (max-width: 480px) {
+  .adminHeader h1 { font-size: 1.4rem; }
+  .equipamientoGrid { grid-template-columns: 1fr; }
+  .previewContainer { grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 10px; }
+  .fileLabel { padding: 20px 10px; font-size: 0.9rem; }
 }
