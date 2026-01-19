@@ -277,14 +277,14 @@
 
 .filterTabs button:hover {
   background: #f8f9fa;
-  border-color: #25d366;
+  border-color: red;
 }
 
 .filterTabs button.activeTab {
-  background: #25d366;
+  background: red;
   color: white;
-  border-color: #25d366;
-  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+  border-color: red;
+  box-shadow: 0 4px 12px rgb(141, 0, 0) (37, 211, 102, 0.3);
 }
 
 .noResults {

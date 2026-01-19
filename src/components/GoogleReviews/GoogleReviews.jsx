@@ -72,7 +72,7 @@ const GoogleReviews = () => {
             contenedor.scrollBy({ left: 340, behavior: "smooth" });
           }
         }
-      }, 1000);
+      }, 2000);
     };
 
     startAutoScroll();
