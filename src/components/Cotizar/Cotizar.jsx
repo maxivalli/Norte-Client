@@ -13,7 +13,7 @@ const CotizadorNorte = () => {
   const [loading, setLoading] = useState(false);
 
   const TIPO_CAMBIO = 1000;
-  const API_BASE = "http://localhost:5001/api/guia/consulta";
+  const API_BASE = "https://norte-production.up.railway.app/api/guia/consulta";
 
   useEffect(() => {
     fetch(API_BASE).then(res => res.json()).then(data => setMarcas(data));
