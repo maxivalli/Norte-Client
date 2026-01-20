@@ -41,7 +41,7 @@
 }
 
 .logoutBtn { background-color: #ff5252; color: white; }
-.homeBtn { background-color: #2563eb; color: white; }
+.homeBtn { background-color: rgb(240, 240, 240); color: black; }
 
 /* ==========================================================================
    2. FORMULARIO - ESTRUCTURA GENERAL
@@ -365,8 +365,31 @@
   .adminContainer { margin: 10px; padding: 15px; }
   .row { flex-direction: column; gap: 10px; }
   
-  .tipoVehiculoGrid { grid-template-columns: 1fr; }
-  .radioLabel { flex-direction: row; justify-content: flex-start; gap: 15px; padding: 15px; }
+  /* Dentro de @media (max-width: 768px) */
+
+/* Dentro de @media (max-width: 768px) */
+
+.tipoVehiculoGrid {
+  /* Forzamos una sola columna para que queden uno arriba del otro */
+  grid-template-columns: 1fr; 
+  gap: 10px;
+}
+
+.radioLabel {
+  /* Cambiamos la dirección a fila para que el check y el texto estén alineados */
+  flex-direction: row; 
+  align-items: center; 
+  justify-content: flex-start;
+  gap: 15px;
+  padding: 15px; /* Más espacio para tocar con el dedo */
+  width: 100%;
+}
+
+.radioLabel input {
+  margin-bottom: 0; /* Eliminamos el margen que se usaba en desktop */
+  width: 20px;
+  height: 20px;
+}
   
   .equipamientoGrid { grid-template-columns: 1fr 1fr; }
   

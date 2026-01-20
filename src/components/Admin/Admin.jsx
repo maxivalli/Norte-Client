@@ -293,7 +293,7 @@ function Admin() {
       </header>
 
       {/* SECCIÓN: ACTUALIZACIÓN DE GUÍA DE PRECIOS (EXCEL) */}
-      <section className={styles.acaraSection} style={{ backgroundColor: '#f0f9ff', padding: '25px', borderRadius: '24px', marginBottom: '30px', border: '2px solid #bae6fd' }}>
+      <section className={styles.acaraSection} style={{ backgroundColor: '#f0f9ff', padding: '25px', borderRadius: '10px', marginBottom: '30px', border: '2px solid #bae6fd' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '10px' }}>
           <div style={{ backgroundColor: '#0284c7', padding: '10px', borderRadius: '12px' }}>
             <FileText color="white" size={24} />
@@ -336,7 +336,7 @@ function Admin() {
             {cargandoGuia ? (
               <>⏳ Procesando base de datos...</>
             ) : (
-              <>📊 Seleccionar Archivo Excel</>
+              <>📊 Seleccionar Archivo</>
             )}
           </label>
           
