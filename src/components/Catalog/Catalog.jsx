@@ -15,7 +15,7 @@ function Catalog({ autoUrl }) {
   const API_URL =
     window.location.hostname === "localhost"
       ? "http://localhost:5001/api/autos"
-      : "https://norte-production.up.railway.app/api/autos";
+      : "https://norte-api.up.railway.app/api/autos";
 
   const generarSlug = (nombre) => {
     return nombre

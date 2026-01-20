@@ -12,7 +12,7 @@ const AdminBanners = () => {
 
   const fetchBanners = async () => {
     const res = await fetch(
-      "https://norte-production.up.railway.app/api/banners"
+      "https://norte-api.up.railway.app/api/banners"
     );
     const data = await res.json();
     setBanners(data);
@@ -43,7 +43,7 @@ const AdminBanners = () => {
 
       if (dataClou.secure_url) {
         // 3. Enviamos el link que nos dio Cloudinary a tu base de datos en Railway
-        await fetch("https://norte-production.up.railway.app/api/banners", {
+        await fetch("https://norte-api.up.railway.app/api/banners", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -65,7 +65,7 @@ const AdminBanners = () => {
 
   const handleEliminar = async (id) => {
     if (!window.confirm("¿Eliminar banner?")) return;
-    await fetch(`https://norte-production.up.railway.app/api/banners/${id}`, {
+    await fetch(`https://norte-api.up.railway.app/api/banners/${id}`, {
       method: "DELETE",
     });
     fetchBanners();

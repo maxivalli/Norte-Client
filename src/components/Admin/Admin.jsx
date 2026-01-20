@@ -41,7 +41,7 @@ function Admin() {
 
   const BASE_URL = window.location.hostname === "localhost"
       ? "http://localhost:5001/api"
-      : "https://norte-production.up.railway.app/api";
+      : "norte-api.up.railway.app/api";
 
   const API_URL = `${BASE_URL}/autos`;
 

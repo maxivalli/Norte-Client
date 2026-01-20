@@ -25,7 +25,7 @@ function CarModal({ auto, onClose, onSimulate }) {
 
   useEffect(() => {
     if (auto && auto.id) {
-      const backendUrl = "https://norte-production.up.railway.app";
+      const backendUrl = "https://norte-api.up.railway.app";
       fetch(`${backendUrl}/api/autos/${auto.id}/visita`, {
         method: "PATCH",
       })
@@ -60,7 +60,7 @@ function CarModal({ auto, onClose, onSimulate }) {
       .replace(/[^\w\s-]/g, "")
       .replace(/[\s_-]+/g, "-")
       .replace(/^-+|-+$/g, "");
-    return `https://norte-production.up.railway.app/share/auto/${slug}`;
+    return `https://norte-api.up.railway.app/share/auto/${slug}`;
   };
 
   const handleCompartir = () => {

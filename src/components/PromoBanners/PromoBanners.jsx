@@ -8,7 +8,7 @@ function PromoBanners() {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    fetch('https://norte-production.up.railway.app/api/banners/activos')
+    fetch('https://norte-api.up.railway.app/api/banners/activos')
       .then(res => res.json())
       .then(data => {
         const bannersAleatorios = data.sort(() => Math.random() - 0.5);
