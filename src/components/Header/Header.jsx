@@ -27,13 +27,15 @@ function Header() {
         <a href="#catalogo" onClick={() => setIsOpen(false)}>
           Catálogo
         </a>
-        {/* Nuevo enlace al simulador */}
 
         <a href="#contacto" onClick={() => setIsOpen(false)}>
           Contacto
         </a>
         <a href="#simulador" onClick={() => setIsOpen(false)}>
           Simulador
+        </a>
+        <a href="#tasador" onClick={() => setIsOpen(false)}>
+          Tasador
         </a>
       </nav>
     </header>

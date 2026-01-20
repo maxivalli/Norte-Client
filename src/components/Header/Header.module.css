@@ -4,7 +4,7 @@
   align-items: center;
   padding: 1rem 5%;
   background-color: #1a1a1a;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 100%;
   position: relative; /* Importante para que el menú móvil se posicione bien */
   z-index: 1000;
@@ -20,8 +20,8 @@
 }
 
 .logoImg {
-  height: 50px;    /* Ajusta este valor según te guste más */
-  width: auto;     /* Mantiene la proporción */
+  height: 50px; /* Ajusta este valor según te guste más */
+  width: auto; /* Mantiene la proporción */
   object-fit: contain;
 }
 
@@ -55,12 +55,22 @@
 
 /* Header.module.css */
 .nav a[href="#simulador"] {
-  color: #25D366; /* El verde de tu marca */
+  color: #25d366; /* El verde de tu marca */
   font-weight: bold;
 }
 
 .nav a[href="#simulador"]:hover {
   color: green; /* El verde de tu marca */
+  font-weight: bold;
+}
+
+.nav a[href="#tasador"] {
+  color: rgb(69, 69, 255); /* El verde de tu marca */
+  font-weight: bold;
+}
+
+.nav a[href="#tasador"]:hover {
+  color: rgb(31, 31, 176); /* El verde de tu marca */
 }
 
 /* --- MODO RESPONSIVE (CELULARES) --- */
@@ -79,7 +89,7 @@
     width: 100%;
     background-color: black;
     padding: 20px;
-    box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
     gap: 15px;
   }
 

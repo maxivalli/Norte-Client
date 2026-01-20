@@ -5,6 +5,7 @@ import Hero from "../Hero/Hero";
 import GoogleReviews from "../GoogleReviews/GoogleReviews";
 import PromoBanners from "../PromoBanners/PromoBanners";
 import Catalog from "../Catalog/Catalog";
+import Cotizar from "../Cotizar/Cotizar";
 import Contact from "../Contact/Contact";
 import Footer from "../Footer/Footer";
 
@@ -21,6 +22,7 @@ function Home() {
         {/* Le pasamos el slug al catálogo */}
         <Catalog autoUrl={slug} />
       </div>
+      <Cotizar />
       <Contact />
       <Footer />
     </main>

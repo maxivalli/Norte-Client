@@ -1,0 +1,226 @@
+.container {
+  /* Control del ancho total para que coincida con el simulador */
+  max-width: 1200px; 
+  width: 92%; /* Esto garantiza un margen externo del 4% a cada lado en móviles */
+  margin: 2rem auto;
+  
+  /* Padding interno para que el contenido no toque los bordes del recuadro blanco */
+  padding: 1.5rem; 
+  
+  background-color: #ffffff;
+  color: #1e293b;
+  border-radius: 32px; /* Ajustado para suavizar los bordes */
+ box-shadow: 0 20px 60px rgba(0, 0, 0, 0.07);
+  border: 1px solid #f1f5f9;
+  box-sizing: border-box; /* Crucial para que el padding no rompa el ancho */
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 3rem; /* Más espacio interno en escritorio */
+    width: 100%; /* En escritorio deja que mande el max-width */
+  }
+}
+
+.resetButton {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+
+.resetButton:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.resetButton:active {
+  transform: translateY(0);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.header p {
+  margin-top: 0;
+  color: gray;
+}
+
+.iconWrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  background-color: #eff6ff;
+  border-radius: 9999px;
+  margin-bottom: 1rem;
+}
+
+.accentIcon {
+  color: #2563eb;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 900;
+  color: #1e293b;
+  letter-spacing: -0.025em;
+  margin-bottom: 0.5rem;
+  margin-bottom: 0;
+}
+
+.accentText {
+  color: #2563eb;
+}
+
+.subtitle {
+  color: #64748b;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.exchangeBadge {
+  display: inline-block;
+  margin-top: 0.75rem;
+  padding: 0.35rem 1rem;
+  background-color: #f1f5f9;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+/* Selectores en Grid */
+.selectorsGrid {
+  display: grid;
+  grid-template-columns: 1fr; /* Una columna en móvil */
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .selectorsGrid {
+    grid-template-columns: 1fr 1fr; /* Dos columnas en tablet/pc */
+  }
+}
+
+@media (min-width: 1024px) {
+  .selectorsGrid {
+    grid-template-columns: repeat(4, 1fr); /* Cuatro columnas en escritorio para que no sea tan alto */
+  }
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin-left: 0.5rem;
+  letter-spacing: 0.05em;
+}
+
+.select {
+  width: 100%;
+  padding: 1rem;
+  background-color: #f8fafc;
+  border-radius: 14px;
+  border: 2px solid #f1f5f9;
+  font-weight: 600;
+  color: #334155;
+  outline: none;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.select:focus {
+  border-color: #2563eb;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.select:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background-color: #f1f5f9;
+}
+
+/* Tarjeta de Resultado Final */
+.resultCard {
+  margin-top: 2rem;
+  padding: 2.5rem 1.5rem;
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  border-radius: 24px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 15px 30px -10px rgba(37, 99, 235, 0.3);
+}
+
+.resultLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.8;
+  margin-bottom: 0.5rem;
+}
+
+.priceDisplay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.currency {
+  font-size: 1.5rem;
+  font-weight: 300;
+}
+
+.amount {
+  font-size: 2.75rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.resultDetail {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.loadingWrapper {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+  color: #2563eb;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

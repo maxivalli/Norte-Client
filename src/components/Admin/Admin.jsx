@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Car, ChevronRight, FileText, Smartphone } from "lucide-react";
 import AdminBanners from "../AdminBanners/AdminBanners";
 import styles from "./Admin.module.css";
 
@@ -11,6 +12,7 @@ function Admin() {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [cargando, setCargando] = useState(false);
+  const [cargandoGuia, setCargandoGuia] = useState(false);
 
   // --- EQUIPAMIENTO CORREGIDO CON CATEGORÍAS ---
   const equipamientoOpciones = [
@@ -37,10 +39,11 @@ function Admin() {
 
   const [equipamientoSeleccionado, setEquipamientoSeleccionado] = useState({});
 
-  const API_URL =
-    window.location.hostname === "localhost"
-      ? "http://localhost:5001/api/autos"
-      : "https://norte-production.up.railway.app/api/autos";
+  const BASE_URL = window.location.hostname === "localhost"
+      ? "http://localhost:5001/api"
+      : "https://norte-production.up.railway.app/api";
+
+  const API_URL = `${BASE_URL}/autos`;
 
   const initialForm = {
     nombre: "",
@@ -110,6 +113,52 @@ function Admin() {
     setPreviews(newPreviews);
   };
 
+  // NUEVA FUNCIÓN: Subir XLSX al Servidor
+  const handleUploadGuia = async (e) => {
+    const file = e.target.files[0];
+    
+    if (!file) return;
+
+    // Verificación de extensión
+    const extension = file.name.split('.').pop().toLowerCase();
+    if (extension !== 'xlsx' && extension !== 'xls' && extension !== 'csv') {
+      alert("⚠️ Por favor, sube un archivo Excel (.xlsx o .xls)");
+      return;
+    }
+
+    if (!window.confirm("¿Seguro que quieres reemplazar toda la base de precios con este archivo?")) {
+      return;
+    }
+
+    setCargandoGuia(true);
+    const formDataGuia = new FormData();
+    formDataGuia.append("archivo", file);
+
+    // Apuntamos a la nueva ruta del backend
+    const destinoUrl = `${BASE_URL}/admin/upload-guia`;
+
+    try {
+      const res = await fetch(destinoUrl, {
+        method: "POST",
+        body: formDataGuia,
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert(`✅ ¡Éxito! Se procesaron ${data.count} vehículos correctamente.`);
+      } else {
+        alert(`❌ Error: ${data.error}`);
+      }
+    } catch (error) {
+      console.error("Error de conexión:", error);
+      alert("No se pudo conectar con el servidor.");
+    } finally {
+      setCargandoGuia(false);
+      e.target.value = null; // Resetear input
+    }
+  };
+
   const uploadImagesToCloudinary = async (files) => {
     const uploadedUrls = [];
     const uploadPreset = "norte_autos";
@@ -138,7 +187,6 @@ function Admin() {
     setCargando(true);
 
     try {
-      // Generar la descripción basada en los checks activos
       const descripcionConEmojis = equipamientoOpciones
         .filter((op) => equipamientoSeleccionado[op.id])
         .map((op) => `${op.emoji} ${op.label}`)
@@ -156,9 +204,9 @@ function Admin() {
         ...formData,
         descripcion: descripcionConEmojis,
         imagenes: urlsFinales,
-        precio: Math.round(Number(formData.precio)),
+        precio: formData.precio,
         anio: Math.round(Number(formData.anio)),
-        kilometraje: Math.round(Number(formData.kilometraje)),
+        kilometraje:formData.kilometraje,
       };
 
       const res = await fetch(
@@ -201,7 +249,6 @@ function Admin() {
 
     const nuevosChecks = {};
     equipamientoOpciones.forEach((op) => {
-      // Verificamos si la descripción del auto guardado contiene el nombre del equipamiento
       if (auto.descripcion?.includes(op.label)) {
         nuevosChecks[op.id] = true;
       }
@@ -244,6 +291,62 @@ function Admin() {
           <button onClick={cerrarSesion} className={styles.logoutBtn}>Cerrar Sesión</button>
         </div>
       </header>
+
+      {/* SECCIÓN: ACTUALIZACIÓN DE GUÍA DE PRECIOS (EXCEL) */}
+      <section className={styles.acaraSection} style={{ backgroundColor: '#f0f9ff', padding: '25px', borderRadius: '24px', marginBottom: '30px', border: '2px solid #bae6fd' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '10px' }}>
+          <div style={{ backgroundColor: '#0284c7', padding: '10px', borderRadius: '12px' }}>
+            <FileText color="white" size={24} />
+          </div>
+          <h3 style={{ margin: 0, fontSize: '20px', color: '#0369a1' }}>
+            Actualizar Guía de Precios
+          </h3>
+        </div>
+        
+        <p style={{ color: '#0c4a6e', fontSize: '14px', marginBottom: '20px' }}>
+          Sube tu archivo <strong>Excel (.xlsx)</strong> para actualizar los valores de tasación. 
+          El sistema procesará automáticamente marcas, modelos y precios por año.
+        </p>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          <input 
+            type="file" 
+            accept=".xlsx, .xls, .csv" 
+            onChange={handleUploadGuia} 
+            disabled={cargandoGuia}
+            style={{ display: 'none' }}
+            id="excel-upload"
+          />
+          <label 
+            htmlFor="excel-upload"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: '14px 28px',
+              backgroundColor: cargandoGuia ? '#94a3b8' : '#0284c7',
+              color: 'white',
+              borderRadius: '14px',
+              cursor: cargandoGuia ? 'not-allowed' : 'pointer',
+              fontWeight: 'bold',
+              boxShadow: '0 4px 12px rgba(2, 132, 199, 0.2)',
+              transition: 'all 0.2s active:scale-95'
+            }}
+          >
+            {cargandoGuia ? (
+              <>⏳ Procesando base de datos...</>
+            ) : (
+              <>📊 Seleccionar Archivo Excel</>
+            )}
+          </label>
+          
+          {cargandoGuia && (
+            <span style={{ fontSize: '12px', color: '#0284c7', fontWeight: '500' }}>
+              No cierres el navegador, esto puede demorar unos segundos...
+            </span>
+          )}
+        </div>
+      </section>
 
       <section className={styles.formSection}>
         <form onSubmit={handleSubmit} className={styles.form}>
