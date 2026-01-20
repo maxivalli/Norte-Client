@@ -110,13 +110,13 @@ const GoogleReviews = () => {
           </div>
           <h2>Lo que dicen nuestros clientes</h2>
           <div className={styles.ratingGeneral}>
-            <span className={styles.score}>4.9</span>
+            <span className={styles.score}>4.6</span>
             <div className={styles.stars}>
               {[...Array(5)].map((_, i) => (
                 <Star key={i} size={16} fill="#ffb400" color="#ffb400" />
               ))}
             </div>
-            <span className={styles.totalReviews}>(150+ reseñas)</span>
+            <span className={styles.totalReviews}>(50+ reseñas)</span>
           </div>
         </div>
 
@@ -153,7 +153,7 @@ const GoogleReviews = () => {
 
         <div className={styles.footer}>
           <a
-            href="https://www.google.com/maps" 
+            href="https://maps.app.goo.gl/nbMd2SHHaP1hNYHc6" 
             target="_blank"
             rel="noopener noreferrer"
             className={styles.googleLink}
