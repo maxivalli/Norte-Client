@@ -259,6 +259,10 @@
   margin-top: 0 !important; /* Quitamos margen superior si lo tuviera */
 }
 
+.submitBtn:disabled:hover {
+  background-color: rgb(119, 119, 119) !important;
+}
+
 /* Opcional: Si el botón de "Copiado" cambia de color */
 .shareBtn:active {
   transform: scale(0.98);

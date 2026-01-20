@@ -5,6 +5,9 @@ import AdminBanners from "../AdminBanners/AdminBanners";
 import styles from "./Admin.module.css";
 
 function Admin() {
+  // ==========================================
+  // 1. HOOKS Y ESTADOS PRINCIPALES
+  // ==========================================
   const navigate = useNavigate();
   const [autos, setAutos] = useState([]);
   const [editandoId, setEditandoId] = useState(null);
@@ -14,7 +17,9 @@ function Admin() {
   const [cargando, setCargando] = useState(false);
   const [cargandoGuia, setCargandoGuia] = useState(false);
 
-  // --- EQUIPAMIENTO CORREGIDO CON CATEGORÍAS ---
+  // ==========================================
+  // 2. CONFIGURACIÓN DE OPCIONES (EQUIPAMIENTO)
+  // ==========================================
   const equipamientoOpciones = [
     { id: "airbags", label: "Airbags", emoji: "🛡️", categoria: "Seguridad" },
     { id: "abs", label: "ABS", emoji: "🛑", categoria: "Seguridad" },
@@ -39,9 +44,12 @@ function Admin() {
 
   const [equipamientoSeleccionado, setEquipamientoSeleccionado] = useState({});
 
+  // ==========================================
+  // 3. CONFIGURACIÓN DE URLs Y FORMULARIO
+  // ==========================================
   const BASE_URL = window.location.hostname === "localhost"
       ? "http://localhost:5001/api"
-      : "norte-api.up.railway.app/api";
+      : "https://norte-api.up.railway.app/api";
 
   const API_URL = `${BASE_URL}/autos`;
 
@@ -64,6 +72,9 @@ function Admin() {
 
   const [formData, setFormData] = useState(initialForm);
 
+  // ==========================================
+  // 4. EFECTOS (AUTENTICACIÓN Y CARGA INICIAL)
+  // ==========================================
   useEffect(() => {
     const auth = localStorage.getItem("adminAuth");
     if (auth !== "true") {
@@ -73,6 +84,9 @@ function Admin() {
     }
   }, [navigate]);
 
+  // ==========================================
+  // 5. FUNCIONES DE CARGA Y API
+  // ==========================================
   const cargarAutos = async () => {
     try {
       const res = await fetch(API_URL);
@@ -83,6 +97,9 @@ function Admin() {
     }
   };
 
+  // ==========================================
+  // 6. MANEJO DE FORMULARIO (INPUTS Y ARCHIVOS)
+  // ==========================================
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -113,13 +130,13 @@ function Admin() {
     setPreviews(newPreviews);
   };
 
-  // NUEVA FUNCIÓN: Subir XLSX al Servidor
+  // ==========================================
+  // 7. GESTIÓN DE GUÍA DE PRECIOS (EXCEL)
+  // ==========================================
   const handleUploadGuia = async (e) => {
     const file = e.target.files[0];
-    
     if (!file) return;
 
-    // Verificación de extensión
     const extension = file.name.split('.').pop().toLowerCase();
     if (extension !== 'xlsx' && extension !== 'xls' && extension !== 'csv') {
       alert("⚠️ Por favor, sube un archivo Excel (.xlsx o .xls)");
@@ -134,7 +151,6 @@ function Admin() {
     const formDataGuia = new FormData();
     formDataGuia.append("archivo", file);
 
-    // Apuntamos a la nueva ruta del backend
     const destinoUrl = `${BASE_URL}/admin/upload-guia`;
 
     try {
@@ -142,7 +158,6 @@ function Admin() {
         method: "POST",
         body: formDataGuia,
       });
-
       const data = await res.json();
 
       if (res.ok) {
@@ -155,10 +170,13 @@ function Admin() {
       alert("No se pudo conectar con el servidor.");
     } finally {
       setCargandoGuia(false);
-      e.target.value = null; // Resetear input
+      e.target.value = null;
     }
   };
 
+  // ==========================================
+  // 8. CLOUDINARY E IMPACTO EN DB (POST/PUT/DELETE)
+  // ==========================================
   const uploadImagesToCloudinary = async (files) => {
     const uploadedUrls = [];
     const uploadPreset = "norte_autos";
@@ -206,7 +224,7 @@ function Admin() {
         imagenes: urlsFinales,
         precio: formData.precio,
         anio: Math.round(Number(formData.anio)),
-        kilometraje:formData.kilometraje,
+        kilometraje: formData.kilometraje,
       };
 
       const res = await fetch(
@@ -230,6 +248,20 @@ function Admin() {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (window.confirm("¿Eliminar este vehículo?")) {
+      try {
+        const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+        if (res.ok) cargarAutos();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
+  // ==========================================
+  // 9. LÓGICA DE NAVEGACIÓN Y LIMPIEZA
+  // ==========================================
   const limpiarFormulario = () => {
     setEditandoId(null);
     setFormData(initialForm);
@@ -257,17 +289,6 @@ function Admin() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm("¿Eliminar este vehículo?")) {
-      try {
-        const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-        if (res.ok) cargarAutos();
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  };
-
   const cerrarSesion = () => {
     localStorage.removeItem("adminAuth");
     navigate("/login");
@@ -275,12 +296,17 @@ function Admin() {
 
   const goHome = () => navigate("/");
 
+  // Filtrado de búsqueda en lista de inventario
   const autosFiltrados = autos.filter((auto) =>
     auto.nombre.toLowerCase().includes(filtroAdmin.toLowerCase())
   );
 
+  // ==========================================
+  // 10. RENDERIZADO DEL COMPONENTE
+  // ==========================================
   return (
     <div className={styles.adminContainer}>
+      {/* HEADER */}
       <header className={styles.adminHeader}>
         <div>
           <h1>{editandoId ? "📝 Editando Auto" : "🚗 Panel de Carga"}</h1>
@@ -292,7 +318,7 @@ function Admin() {
         </div>
       </header>
 
-      {/* SECCIÓN: ACTUALIZACIÓN DE GUÍA DE PRECIOS (EXCEL) */}
+      {/* SECCIÓN: ACTUALIZACIÓN DE GUÍA DE PRECIOS */}
       <section className={styles.acaraSection} style={{ backgroundColor: '#f0f9ff', padding: '25px', borderRadius: '10px', marginBottom: '30px', border: '2px solid #bae6fd' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '10px' }}>
           <div style={{ backgroundColor: '#0284c7', padding: '10px', borderRadius: '12px' }}>
@@ -302,67 +328,34 @@ function Admin() {
             Actualizar Guía de Precios
           </h3>
         </div>
-        
         <p style={{ color: '#0c4a6e', fontSize: '14px', marginBottom: '20px' }}>
-          Sube tu archivo <strong>Excel (.xlsx)</strong> para actualizar los valores de tasación. 
-          El sistema procesará automáticamente marcas, modelos y precios por año.
+          Sube tu archivo <strong>Excel (.xlsx)</strong> para actualizar los valores de tasación.
         </p>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-          <input 
-            type="file" 
-            accept=".xlsx, .xls, .csv" 
-            onChange={handleUploadGuia} 
-            disabled={cargandoGuia}
-            style={{ display: 'none' }}
-            id="excel-upload"
-          />
-          <label 
-            htmlFor="excel-upload"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              padding: '14px 28px',
-              backgroundColor: cargandoGuia ? '#94a3b8' : '#0284c7',
-              color: 'white',
-              borderRadius: '14px',
-              cursor: cargandoGuia ? 'not-allowed' : 'pointer',
-              fontWeight: 'bold',
-              boxShadow: '0 4px 12px rgba(2, 132, 199, 0.2)',
-              transition: 'all 0.2s active:scale-95'
-            }}
-          >
-            {cargandoGuia ? (
-              <>⏳ Procesando base de datos...</>
-            ) : (
-              <>📊 Seleccionar Archivo</>
-            )}
+          <input type="file" accept=".xlsx, .xls, .csv" onChange={handleUploadGuia} disabled={cargandoGuia} style={{ display: 'none' }} id="excel-upload" />
+          <label htmlFor="excel-upload" style={{
+              display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 28px',
+              backgroundColor: cargandoGuia ? '#94a3b8' : '#0284c7', color: 'white',
+              borderRadius: '14px', cursor: cargandoGuia ? 'not-allowed' : 'pointer', fontWeight: 'bold'
+            }}>
+            {cargandoGuia ? <>⏳ Procesando base de datos...</> : <>📊 Seleccionar Archivo</>}
           </label>
-          
-          {cargandoGuia && (
-            <span style={{ fontSize: '12px', color: '#0284c7', fontWeight: '500' }}>
-              No cierres el navegador, esto puede demorar unos segundos...
-            </span>
-          )}
+          {cargandoGuia && <span style={{ fontSize: '12px', color: '#0284c7', fontWeight: '500' }}>No cierres el navegador...</span>}
         </div>
       </section>
 
+      {/* FORMULARIO DE CARGA/EDICIÓN */}
       <section className={styles.formSection}>
         <form onSubmit={handleSubmit} className={styles.form}>
           
+          {/* TIPO DE VEHICULO */}
           <div className={styles.formGroup}>
             <label>Tipo de Vehículo:</label>
             <div className={styles.tipoVehiculoGrid}>
               {["Automóvil", "Camioneta", "Motocicleta"].map((t) => (
                 <label key={t} className={styles.radioLabel}>
-                  <input
-                    type="radio"
-                    name="tipo"
-                    value={t}
-                    checked={formData.tipo === t}
-                    onChange={handleChange}
-                  />
+                  <input type="radio" name="tipo" value={t} checked={formData.tipo === t} onChange={handleChange} />
                   <span>{t === "Automóvil" ? "🚗" : t === "Camioneta" ? "🛻" : "🏍️"} {t}</span>
                 </label>
               ))}
@@ -371,13 +364,7 @@ function Admin() {
 
           <div className={styles.formGroup}>
             <label>Marca y Modelo:</label>
-            <input
-              name="nombre"
-              placeholder="Ej: VW Golf 2020"
-              onChange={handleChange}
-              value={formData.nombre}
-              required
-            />
+            <input name="nombre" placeholder="Ej: VW Golf 2020" onChange={handleChange} value={formData.nombre} required />
           </div>
 
           <div className={styles.row}>
@@ -390,28 +377,17 @@ function Admin() {
             </div>
             <div className={styles.formGroup} style={{ flex: 2 }}>
               <label>Precio (0 para "Consultar"):</label>
-              <input
-                name="precio"
-                type="number"
-                onChange={handleChange}
-                value={formData.precio}
-                required
-              />
+              <input name="precio" type="number" onChange={handleChange} value={formData.precio} required />
             </div>
           </div>
 
+          {/* DROPZONE DE IMÁGENES */}
           <div className={styles.formGroup}>
             <label>Imágenes:</label>
             <label className={styles.fileLabel}>
               <span className={styles.uploadIcon}>📸</span>
               {selectedFiles.length > 0 ? `${selectedFiles.length} seleccionadas` : "Subir fotos"}
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={handleFileChange}
-                className={styles.hiddenFileInput}
-              />
+              <input type="file" multiple accept="image/*" onChange={handleFileChange} className={styles.hiddenFileInput} />
             </label>
             {previews.length > 0 && (
               <div className={styles.previewContainer}>
@@ -474,9 +450,7 @@ function Admin() {
               value={formData.etiqueta || ""}
               style={{ 
                 border: formData.etiqueta ? '2px solid #25D366' : '1px solid #ddd',
-                padding: '10px',
-                borderRadius: '8px',
-                backgroundColor: formData.etiqueta ? '#f0fff4' : '#fff'
+                padding: '10px', borderRadius: '8px', backgroundColor: formData.etiqueta ? '#f0fff4' : '#fff'
               }}
             >
               <option value="">Sin etiqueta (Venta Normal)</option>
@@ -486,33 +460,22 @@ function Admin() {
             </select>
           </div>
 
-          {/* SECCIÓN DE EQUIPAMIENTO AGRUPADO */}
+          {/* EQUIPAMIENTO AGRUPADO */}
           <div className={styles.formGroup}>
             <label className={styles.mainLabel}>Equipamiento destacado:</label>
             <div className={styles.equipamientoContainer}>
               {["Seguridad", "Confort", "Tecnología", "Exterior"].map((cat) => (
                 <div key={cat} className={styles.categoriaBlock}>
                   <h4 className={styles.categoriaTitulo}>
-                    {cat === "Seguridad" && "🛡️ "}
-                    {cat === "Confort" && "🌡️ "}
-                    {cat === "Tecnología" && "📱 "}
-                    {cat === "Exterior" && "🚘 "}
-                    {cat}
+                    {cat === "Seguridad" && "🛡️ "}{cat === "Confort" && "🌡️ "}{cat === "Tecnología" && "📱 "}{cat === "Exterior" && "🚘 "}{cat}
                   </h4>
                   <div className={styles.equipamientoGrid}>
                     {equipamientoOpciones
                       .filter((op) => op.categoria === cat)
                       .map((op) => (
                         <label key={op.id} className={styles.equipamientoItem}>
-                          <input
-                            type="checkbox"
-                            name={op.id}
-                            checked={!!equipamientoSeleccionado[op.id]}
-                            onChange={handleEquipamientoChange}
-                          />
-                          <span className={styles.checkboxCustom}>
-                            {op.emoji} {op.label}
-                          </span>
+                          <input type="checkbox" name={op.id} checked={!!equipamientoSeleccionado[op.id]} onChange={handleEquipamientoChange} />
+                          <span className={styles.checkboxCustom}>{op.emoji} {op.label}</span>
                         </label>
                       ))}
                   </div>
@@ -530,22 +493,16 @@ function Admin() {
             <button type="submit" className={styles.submitBtn} disabled={cargando}>
               {cargando ? "⏳ Subiendo..." : editandoId ? "💾 Guardar Cambios" : "🚀 Publicar"}
             </button>
-            {editandoId && (
-              <button type="button" onClick={limpiarFormulario} className={styles.cancelBtn}>Cancelar</button>
-            )}
+            {editandoId && <button type="button" onClick={limpiarFormulario} className={styles.cancelBtn}>Cancelar</button>}
           </div>
         </form>
       </section>
 
+      {/* LISTADO DE INVENTARIO (EDITAR/BORRAR) */}
       <section className={styles.listSection}>
         <div className={styles.listHeader}>
           <h3>Inventario ({autos.length} unidades)</h3>
-          <input
-            type="text"
-            placeholder="🔍 Buscar..."
-            className={styles.searchAdminInput}
-            onChange={(e) => setFiltroAdmin(e.target.value)}
-          />
+          <input type="text" placeholder="🔍 Buscar..." className={styles.searchAdminInput} onChange={(e) => setFiltroAdmin(e.target.value)} />
         </div>
         <div className={styles.listaBorrar}>
           {autosFiltrados.map((auto) => (
@@ -564,6 +521,8 @@ function Admin() {
           ))}
         </div>
       </section>
+
+      {/* COMPONENTE DE BANNERS */}
       <AdminBanners />
     </div>
   );

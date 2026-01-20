@@ -14,7 +14,7 @@ import {
   Eye,
   Palette,
   ChevronDown,
-  Calculator, // Importamos el icono de calculadora
+  Calculator, 
 } from "lucide-react";
 
 function CarModal({ auto, onClose, onSimulate }) {
@@ -65,7 +65,7 @@ function CarModal({ auto, onClose, onSimulate }) {
 
   const handleCompartir = () => {
     const url = generarLinkCompartir(auto.nombre);
-    const texto = `Mira este ${auto.nombre} en Norte Automotores `;
+    const texto = `Mira este ${auto.nombre} en Norte Automotores`;
     if (navigator.share) {
       navigator
         .share({ title: auto.nombre, text: texto, url })
